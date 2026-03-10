@@ -5,9 +5,10 @@
 ?>
 <main>
     <p>&nbsp;&nbsp;this is main,all the main content will write into main tag </p>
+    <a href="/admin.php">admin</a>
     <script src="script.js"></script>
 </main>
 
-<?php 
+<?php
     include 'php/_footer.php';
 ?>
