@@ -2,15 +2,32 @@
 const userBtn = document.getElementById("userbtn");
 const userMenu = document.getElementById("usermenu");
 
-userBtn.addEventListener("click", () => {
-    userMenu.classList.toggle("show");
-});
+// userBtn.addEventListener("click", () => {
+//     userMenu.classList.toggle("show");
+// });
 
 document.addEventListener("click", (e) => {
     if (!userBtn.contains(e.target) && !userMenu.contains(e.target)) {
         userMenu.classList.remove("show");
     }
 })
+//user dropwarp menu
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("JS 已连接");
+    const avatar = document.getElementById('userAvatar');
+    const menu = document.getElementById('userDropdown');
+
+    if (avatar && menu) {
+        avatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', () => {
+            menu.style.display = 'none';
+        });
+    }
+});
 
 function addData() {
     let currentRow = null;
