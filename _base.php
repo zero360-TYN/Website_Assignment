@@ -70,7 +70,7 @@
     }
 
     // Global PDO object(PHP DATABASE object)
-    $_db = new PDO('mysql:dbname=popmartdb', 'root', '', [
+    $_db = new PDO('mysql:dbname=cematrixdb', 'root', '', [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     ]);
 
