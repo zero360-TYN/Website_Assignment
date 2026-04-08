@@ -1,14 +1,14 @@
 <?php
     $_title = 'Main';
-    require 'php/_base.php';
-    include 'php/_header.php';
+    include '_base.php';
+    include root('_header.php');
 ?>
 <main>
     <p>&nbsp;&nbsp;this is main,all the main content will write into main tag </p>
-    <a href="/admin.php">admin</a>
-    <script src="script.js"></script>
+    <a href="user/register.php">register</a>
+    
 </main>
 
 <?php
-    include 'php/_footer.php';
+    include '_footer.php';
 ?>

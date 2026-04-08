@@ -1,6 +1,6 @@
 <?php
     $_title = 'admin';
-    $_mainCssFileName = "css\table.css";
+    $_mainCssFileName = "table";
     require 'php/_base.php';
     include 'php/_header.php';
 ?>

@@ -1,6 +1,5 @@
-/*----------------------Login GUI----------------------*/
 .login {
-    position: fixed;      /* 固定在屏幕上 */
+    position: fixed;      
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
