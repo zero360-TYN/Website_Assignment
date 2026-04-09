@@ -7,7 +7,6 @@ if (is_post()) {
     $password = req('password');
     $confirm  = req('confirm');
 
-    // 1. 统一使用 $_err (带下划线)，与 _base.php 中的 err() 函数完美配合
     if (!$name) {
         $_err['name'] = 'Name is required';
     }
@@ -28,7 +27,6 @@ if (is_post()) {
         $_err['confirm'] = 'Passwords do not match';
     }
 
-    // 2. 检查 Email 是否已被占用
     if (!isset($_err['email'])) {
         $stm = $_db->prepare('SELECT 1 FROM user WHERE email = ?');
         $stm->execute([$email]);
@@ -40,10 +38,10 @@ if (is_post()) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
         
         $stm = $_db->prepare('INSERT INTO user (email, password, name, role) VALUES (?, ?, ?, "Member")');
-        $stm->execute([$email, $hash, $name]);
+        // $stm->execute([$email, $hash, $name]);
 
         temp('info', 'Registration successful! Please login.');
-        redirect('/login.php');
+        redirect('/user/login.php');
     }
 }
 

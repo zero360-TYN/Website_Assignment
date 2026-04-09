@@ -24,6 +24,9 @@
 </head>
 
 <body>
+    <!-- Flash message -->
+    <div id="info"><?= temp('info') ?></div>
+    
     <header class="header">
         <a href="/index.php">
             <img src="/img/cematrix.png" class="logo" alt="Logo">
