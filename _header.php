@@ -7,7 +7,13 @@
     <!-- import Css-->
     <?php
     if (isset($_mainCssFileName) && !empty($_mainCssFileName)) {
-        echo '<link rel="stylesheet" href="'.'/css/'.$_mainCssFileName.'.css).">';
+        if (is_array($_mainCssFileName)) {
+            foreach($_mainCssFileName as $cssName){
+                echo '<link rel="stylesheet" href="/css/'.$cssName.'.css">';
+            }
+        } else {
+            echo '<link rel="stylesheet" href="/css/'.$_mainCssFileName.'.css">';
+        }
     }
     ?>
     <link rel="stylesheet" href="/css/header.css">

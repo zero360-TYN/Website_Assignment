@@ -1,5 +1,6 @@
 <?php
     $_title = 'Main';
+    $_mainCssFileName[] = 'table';
     include '_base.php';
     include root('_header.php');
 ?>
