@@ -35,7 +35,6 @@
             return $value;
         }
     }
-
     //user
     $_user = $_SESSION['user'] ?? null;
 
@@ -66,7 +65,7 @@
                 return; // OK
             }
         }
-        redirect('/login.php');
+        redirect('user/login.php');
     }
 
     // Global PDO object(PHP DATABASE object)
