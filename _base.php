@@ -6,11 +6,13 @@
     function base($path = '') {
         return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]/$path";
     }
+
     //return local path(use for include)
     function root($path = '') {
         return "$_SERVER[DOCUMENT_ROOT]/$path";
     }
 
+    //return to ? page
     function redirect($url = null){
         $url ??= $_SERVER['REQUEST_URI'];
         header("Location: $url");
@@ -25,6 +27,7 @@
         return $_SERVER['REQUEST_METHOD'] == 'GET';
     }
 
+    //show a flash message
     function temp($key, $value = null) {
         if ($value !== null) {
             $_SESSION["temp_$key"] = $value;
@@ -35,6 +38,7 @@
             return $value;
         }
     }
+    
     //user
     $_user = $_SESSION['user'] ?? null;
 
@@ -77,6 +81,7 @@
         $value = $_REQUEST[$key] ?? $value;
         return is_array($value) ? array_map('trim', $value) : trim($value);
     }
+
     // Global error array
     $_err = [];
 
