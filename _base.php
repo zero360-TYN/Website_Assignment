@@ -92,6 +92,7 @@
                 return; // OK
             }
         }
+        temp('info','Login to continue !');
         redirect('/user/login.php');
     }
 //=========================================shopping cart======================================

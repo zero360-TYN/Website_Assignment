@@ -17,7 +17,7 @@ include root('_header.php');
 
 <main>
     <div class="search-section">
-        <h2 class="page-title">My Wishlist ❤️</h2>
+        <h2 class="page-title">My Wishlist</h2>
         <p class="search-result-text">
             You have <?= count($products) ?> item(s) in your wishlist.
         </p>
