@@ -50,40 +50,40 @@ include root('_header.php');
 ?>
 
 <h2>Register as Member</h2>
-
-<form method="post" action="register.php">
-    <div class="field">
-        <label>Name</label>
-        <input type="text" name="name" value="<?= $name ?? '' ?>" maxlength="50">
-        <?php err('name'); ?>
-    </div>
-
-    <div class="field">
-        <label>Email</label>
-        <input type="email" name="email" value="<?= $email ?? '' ?>" maxlength="100">
-        <?php err('email'); ?>
-    </div>
-
-    <div class="field">
-        <label>Password</label>
-        <input type="password" name="password" maxlength="20">
-        <?php err('password'); ?>
-    </div>
-
-    <div class="field">
-        <label>Confirm Password</label>
-        <input type="password" name="confirm" maxlength="20">
-        <?php err('confirm'); ?>
-    </div>
-
-    <div class="actions">
-        <button type="submit">Register Now</button>
-        <button type="reset">Clear</button>
-    </div>
+<main>
+    <form method="post" action="register.php">
+        <div class="field">
+            <label>Name</label>
+            <input type="text" name="name" value="<?= $name ?? '' ?>" maxlength="50">
+            <?php err('name'); ?>
+        </div>
     
-    <p>Already have an account? <a href="login.php">Login here</a></p>
-</form>
-
+        <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" value="<?= $email ?? '' ?>" maxlength="100">
+            <?php err('email'); ?>
+        </div>
+    
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" maxlength="20">
+            <?php err('password'); ?>
+        </div>
+    
+        <div class="field">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm" maxlength="20">
+            <?php err('confirm'); ?>
+        </div>
+    
+        <div class="actions">
+            <button type="submit">Register Now</button>
+            <button type="reset">Clear</button>
+        </div>
+        
+        <p>Already have an account? <a href="login.php">Login here</a></p>
+    </form>
+</main>
 <?php
 include root('_footer.php');
 ?>
