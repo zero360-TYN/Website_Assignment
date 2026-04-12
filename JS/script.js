@@ -11,25 +11,6 @@ document.addEventListener("click", (e) => {
         userMenu.classList.remove("show");
     }
 })
-//=========================================header=========================================
-//user dropwarp menu
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("JS 已连接");
-    const avatar = document.getElementById('userAvatar');
-    const menu = document.getElementById('userDropdown');
-
-    if (avatar && menu) {
-        avatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        window.addEventListener('click', () => {
-            menu.style.display = 'none';
-        });
-    }
-});
-//=========================================header=========================================
 
 function addData() {
     let currentRow = null;
