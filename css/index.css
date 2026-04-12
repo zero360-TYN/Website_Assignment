@@ -1,0 +1,116 @@
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+}
+.hero-logo {
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    color: #111;
+    margin: 0 0 15px 0;
+    font-weight: 800;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0 0 40px 0;
+    max-width: 600px;
+}
+
+.hero-action {
+    margin-bottom: 60px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #dc3545; 
+    text-decoration: none;
+    border-radius: 50px; 
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #c82333;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+.auth-section {
+    background: #fff;
+    padding: 30px 50px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border: 1px solid #eaeaea;
+}
+
+.auth-section p {
+    margin: 0 0 20px 0;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #111;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 2px solid #111;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #333;
+    border-color: #333;
+}
+
+.btn-secondary.outline {
+    background-color: transparent;
+    color: #111;
+}
+
+.btn-secondary.outline:hover {
+    background-color: #f8f9fa;
+}
+
+.btn-danger {
+    display: inline-block;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: #dc3545;
+    background-color: transparent;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 2px solid #dc3545;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
