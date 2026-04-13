@@ -11,7 +11,7 @@ $order_count = $_db->query("SELECT COUNT(*) FROM orders")->fetchColumn() ?: 0;
 $member_count = $_db->query("SELECT COUNT(*) FROM user")->fetchColumn() ?: 0; 
 
 $_title = 'Admin Dashboard';
-$_mainCssFileName = 'admin'; 
+$_mainCssFileName = 'adminDashboard'; 
 include root('_header.php');
 ?>
 

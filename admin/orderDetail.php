@@ -6,7 +6,7 @@ auth('Admin');
 $order_id = req('id');
 
 if (!$order_id) {
-    redirect('order_maintenance.php');
+    redirect('/admin/orderMaintenance.php');
     exit;
 }
 
