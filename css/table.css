@@ -10,18 +10,20 @@ body {
 #pdtwd {
     font-size: 20px;
     font-weight: bold;
-    margin-bottom: 20px;
+
 }
 
+#pdtwdTwo {
+    margin-bottom: 20px;
+    color: rgb(165, 165, 165);
+    font-weight: 450;
+    font-size: 15px;
+}
 .top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-}
-
-#addrow {
-    position: absolute;
-    margin-left: 85%;
+    align-items: flex-end;
+    margin-right: 75px;
 }
 
 .add_container {
@@ -40,8 +42,9 @@ body {
     background-color: white;
     width: 90%;
     max-width: 40rem;
-    height: 25rem;
+    height: 28rem;
     border-radius: 25px;
+    position: relative;
 }
 
 #addBtn {
@@ -49,52 +52,113 @@ body {
     height: 35px;
     background-color: black;
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
-/*----------ProductSideNav---------*/ 
-.productLbl {
+.productDetail {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
 }
 
-.productLbl input {
+/*--------dashboardDisplay--------*/
+.dashboardDisplay {
     display: flex;
-    margin-bottom: 12px;
-    width: 100%;
-    max-width: 23rem;
-    height: 15px;
-    padding: 5px 10px;
+    gap: 25px;
 }
 
-#pdtdc {
-    height: 70px;
-    resize: none;
-    width: 24rem;
-    margin-bottom: 12px;
+.dashboardTPcontainer, .dashboardIScontainer, .dashboardLScontainer, .dashboardCcontainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgb(253, 253, 253);
+    padding: 25px 23px;
+    height: 80px;
+    min-width: 120px;
+    border-radius: 20px;
+    margin-left: 5px;
+    justify-content: center;
+    border: 2px solid rgb(220, 220, 220);
 }
 
-.productLbl label{
-    margin-bottom: 5px;
+.dashboardTPcontainer label:first-child, .dashboardIScontainer label:first-child, 
+.dashboardLScontainer label:first-child, .dashboardCcontainer label:first-child{
     font-size: 15px;
+    color: rgb(155, 155, 155);
+    font-weight: bold;
 }
+
+#totalProductCount, #inStockCount, #lowStockCount, #categoriesCount {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+#totalProductStatus {
+    background-color: rgba(255, 132, 132, 0.301);
+    color: #ff3d3d;
+    padding: 2px 12px;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 14px;
+    
+}
+
+#inStockStatus {
+    background-color: rgba(79, 231, 66, 0.301);
+    color: #108500;
+    padding: 2px 12px;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+#lowStockStatus {
+    background-color: rgba(214, 205, 77, 0.301);
+    color: #858300;
+    padding: 2px 12px;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+#categoriesStatus {
+    background-color: rgba(77, 171, 214, 0.301);
+    color: #005b85;
+    padding: 2px 12px;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/*--------END--------*/
+
+
+/*----------ProductSideNav---------*/ 
 
 #pdtadd {
     background-color: black;
     color: white;
     border-radius: 30px;
-    height: 35px;
     width: 90px;
+    height: 35px;
     margin-top: 2rem;
     align-self: flex-end;
-    margin-right: 20px; /* 根据需要调整 */
+    margin-right: 20px; 
+    cursor: pointer;
+    margin-top: auto;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+
 }
-/*END*/
+/*--------END--------*/
 
 #addwd {
-    padding: 27px;
-    margin-left: 3px;
+    padding: 10px;
+    margin-top: 15px;
+    margin-left: 15px;
     font-size: 20px;
     font-weight: bold;
 }
@@ -103,9 +167,10 @@ body {
     display: flex;
 }
 
-/*SideNav*/
+/*--------SideNav--------*/
 .productSideNav {
-    width: 200px;
+    margin-top: 80px;
+    width: 150px;
     background-color: rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
@@ -131,41 +196,102 @@ body {
     font-weight: 600;
     background-color: #000000;
 }
+/*--------END--------*/
 
-.productPrice label{
+/*--------productStock--------*/
+.productLbl {
+    display: flex;
+    flex-direction: column;
+    background-color: #F8F8F8;
+    border-radius: 18px;
+    padding: 20px;
+}
+
+#pdtdc {
+    height: 70px;
+    resize: none;
+    width: 24rem;
+    margin-bottom: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1.5px solid rgb(204, 204, 204);
+}
+
+.productPrice label, .productLbl label {
     margin-bottom: 5px;
     font-size: 15px;
 }
 
-.productPrice input {
+.productPrice input,  .productLbl input{
     display: flex;
     margin-bottom: 12px;
     max-width: 100%;
     width: 23rem;
     height: 15px;
     padding: 5px 10px;
+    border-radius: 8px;
+    border: 1.5px solid rgb(204, 204, 204);
 }
 
-.productPrice {
-    display: none;
-    flex-direction: column; /* 加这行 */
+#pdtpc, #pdtdt, #pdtrd, #pdtsk{
+    width: 9rem;
 }
-/*END*/
 
-/*productStock*/
-.productStock {
-    display: none;
+.priceRow, .dateStockRow{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
 }
-/*END*/
 
-/*productDetails*/
-.productDetails {
-    display: none;
+.priceRow div, .dateStockRow div {
+    display: flex;
     flex-direction: column;
 }
 
+.productPrice{
+    display: none;
+    flex-direction: column; 
+    background-color: #F8F8F8;
+    border-radius: 18px;
+    padding: 20px;
+}
 
-/*END*/
+.productLbl, .productPrice, .productDetails{
+    border: 1.5px solid rgb(220, 220, 220);
+}
+
+#uploadImg {
+    display: none;
+}
+
+.uploadArea {
+    height: 70px;
+    max-width: 100%;
+    width: 25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+/*--------END--------*/
+
+/*--------productDetails--------*/
+.productDetails {
+    display: none;
+    flex-direction: column;
+    background-color: #F8F8F8;
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.productDetails label {
+    font-size: 15px;
+}
+/*--------END--------*/
 .addTop {
     display: flex;
 }
@@ -179,42 +305,59 @@ body {
     cursor: pointer;
 }
 
+/*--------Product Table--------*/
 #pdtable {
+    margin-top: 10px;
     width: 95%;
+    border-collapse: collapse;
     table-layout: fixed;
-}
-
-th, td{
-    border: 1px solid grey;
-    padding: 7px 30px;
-    word-break: break-word;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 th {
     white-space: nowrap;
+    background-color: #000000;
+    color: white;
+    text-align: left;
+    padding: 10px 40px;
+    font-weight: 600;
+}
+
+td {
+    text-align: left;
+    padding: 7px 40px;
+    word-break: break-word;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .pdtdl {
-    color: white;
-    background-color: red;
+    color: rgb(197, 6, 6);
+    background-color: rgba(236, 79, 79, 0.4);
     border: none;
     height: 25px;
+    font-weight: 550;
     border-radius: 4px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .pdtet {
-    color: white;
-    background-color: cadetblue;
+    color: rgb(14, 86, 88);
+    background-color: rgba(33, 108, 110, 0.4);
     border: none;
     height: 25px;
     border-radius: 4px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    font-weight: 550;
     gap: 5px;
     margin-left: 5px;
     margin-right: 7px;
 
 }
+
+/*--------END--------*/
 
 #deleterow {
     display: none;
@@ -298,3 +441,73 @@ th {
     height: 35px;
 }
 
+/*----------Product Details---------*/
+.detailRow {
+    display: flex;
+    flex-direction: row;
+    padding: 2px 0;
+}
+
+.detailInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    flex: 1;
+}
+
+#detailImage img {
+    flex-shrink: 0; /* 防止图片被压缩 */
+}
+.detailTitle {
+    font-weight: bold;
+}
+
+.detailRowDescription {
+    display: flex;
+    max-width: 100%;
+    word-break: break-word;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#detailDescription {
+    word-break: break-word;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    font-size: 13px;
+}
+
+#detailName {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#detailPrice {
+    color: rgb(224, 3, 3);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+#detailStock {
+    border-radius: 15px;
+    background-color: hsl(113, 100%, 32%);
+    color: white;
+    width: fit-content;
+    padding: 3px 7px;
+
+}
+
+.detailInfo hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid rgb(220, 220, 220);
+    margin: 8px 0;
+}
+
+.detailInfo div {
+    display: flex;
+    justify-content: space-between;
+}
+/*----------END---------*/
