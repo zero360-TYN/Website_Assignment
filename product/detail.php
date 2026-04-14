@@ -48,7 +48,7 @@ include root('_header.php');
             <h2 class="product-price">RM <?= number_format($p->price, 2) ?></h2>
             
             <?php if ($p->stock > 0): ?>
-                <span class="badge badge-success">In Stock (<?= $p->stock ?>)</span>
+                <span class="badge badge-success">In Stock</span>
             <?php else: ?>
                 <span class="badge badge-danger">Out of Stock</span>
             <?php endif; ?>
@@ -64,7 +64,7 @@ include root('_header.php');
                 <div class="quantity-selector">
                     <label>Quantity：</label>
                     <button id="minusBtn" type="button" class="btn-qty-control">-</button>
-                    <input type="number" id="qty" name="quantity" value="1" readonly class="input-qty">
+                    <input type="number" id="qty" name="quantity" value="1"  min="1" max="100" class="input-qty">
                     <button id="plusBtn" type="button" class="btn-qty-control">+</button>
                 </div>
 

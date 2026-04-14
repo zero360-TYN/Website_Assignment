@@ -35,11 +35,11 @@ $item_stm->execute([$order_id]);
 $items = $item_stm->fetchAll();
 
 $_title = 'Order Detail #' . $order->order_id;
-$_mainCssFileName = 'orderMaintenance'; 
+$_mainCssFileName = 'orderMaintenanceDetail'; 
 include root('_header.php');
 ?>
 
-<main class="admin-layout">
+<main>
     <div class="admin-breadcrumb">
         <a href="/admin/adminDashboard.php">Dashboard</a> 
         <span>/</span> 
@@ -47,7 +47,7 @@ include root('_header.php');
         <span>/</span> Order #<?= htmlspecialchars($order->order_id) ?>
     </div>
 
-    <div class="detail-container">
+    <div>
         <div class="detail-header">
             <h2>Order Details (ID: #<?= $order->order_id ?>)</h2>
             <a href="/admin/orderMaintenance.php" class="btn-back">← Back to List</a>
@@ -85,8 +85,24 @@ include root('_header.php');
             </tbody>
             <tfoot>
                 <tr>
+                    <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
+                    <td>RM <?= number_format($order->total_amount, 2) ?></td>
+                </tr>
+
+                <?php if ($order->discount_amount > 0): ?>
+                <tr class="discount-row">
+                    <td colspan="4" class="text-right">
+                        <strong>Discount (<?= htmlspecialchars($order->promo_code) ?>):</strong>
+                    </td>
+                    <td>- RM <?= number_format($order->discount_amount, 2) ?></td>
+                </tr>
+                <?php endif; ?>
+                
+                <tr class="grand-total-row">
                     <td colspan="4" class="text-right"><strong>Grand Total:</strong></td>
-                    <td class="grand-total-amount">RM <?= number_format($order->total_amount, 2) ?></td>
+                    <td class="grand-total-amount">
+                        RM <?= number_format($order->grand_total, 2) ?>
+                    </td>
                 </tr>
             </tfoot>
         </table>

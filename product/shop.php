@@ -72,7 +72,8 @@ if(is_post()){
                    <?= $is_wished ? '❤️' : '🤍' ?>
                 </a>
                 <div class="info">
-                    <?= $name ?> | RM <?= $price ?>
+                    <?= $name ?><br>
+                    RM <?= $price ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -87,7 +88,7 @@ if(is_post()){
                 <div class="quantity-selector">
                     <label>Quantity：</label>
                     <button id="minusBtn" type="button">-</button>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" readonly>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="100">
                     <button id="plusBtn" type="button">+</button>
                 </div>
                 <div class="popup-actions">

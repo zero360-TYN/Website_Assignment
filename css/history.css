@@ -69,9 +69,37 @@ main{
 }
 
 .header-total {
-    font-weight: bold;
-    color: #d9534f;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px; 
     font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.price-row.discount {
+    color: #dc3545;
+    font-size: 1rem;
+}
+
+.price-row .label {
+    color: #666;
+    font-weight: normal;
+}
+
+.price-row .amount {
+    text-align: right;
+}
+.price-row.total-after-discount{
+    text-align: right;
+    color: #28a745;
+    font-size: 1rem;
 }
 
 .order-body {

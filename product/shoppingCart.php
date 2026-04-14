@@ -53,7 +53,7 @@ $cart = get_cart();
                 <th>Price(RM)</th>
                 <th>Quantity</th>
                 <th>Total(RM)</th>
-                <th>Delete</th>
+                <th class="action-column">Action</th>
             </tr>
 
             <?php
@@ -77,18 +77,16 @@ $cart = get_cart();
                     <td>
                         <div class="qty-display">
                             <span><?= $quantity ?></span>
-                            <button type="button" class="btn-update-popup" data-id="<?= $product_id ?>" data-qty="<?= $quantity ?>">
-                                Update
-                            </button>
                         </div>
                     </td>
                     <td class="item-subtotal">
                         <?= number_format($subtotal, 2) ?>
                     </td>
-                    <td>
+                    <td class="action-column">
                         <form method="POST" class="form-delete">
                             <input type="hidden" name="action" value="clear">
                             <input type="hidden" name="product_id" value="<?= $product_id ?>">
+                            <button type="button" class="btn-update-popup" data-id="<?= $product_id ?>" data-qty="<?= $quantity ?>">Update</button>
                             <button type="submit" class="btn-delete">Clear</button>
                         </form>
                     </td>
@@ -125,7 +123,7 @@ $cart = get_cart();
                 <div class="quantity-selector">
                     <label>Quantity：</label>
                     <button id="minusBtn" type="button" class="btn-qty-control">-</button>
-                    <input type="number" id="popup-qty" name="quantity" value="1" min="1" max="100" readonly class="input-qty">
+                    <input type="number" id="popup-qty" name="quantity" value="1" min="1" max="100" class="input-qty">
                     <button id="plusBtn" type="button" class="btn-qty-control">+</button>
                 </div>
                 

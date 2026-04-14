@@ -1,0 +1,172 @@
+body {
+    background-color: #f5f5f5;
+    margin: 0;
+}
+
+main{
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111; /* 纯黑字体 */
+}
+.admin-breadcrumb {
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    color: #888;
+}
+
+.admin-breadcrumb a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.admin-breadcrumb a:hover {
+    color: #dc3545;
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.detail-header h2 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #111; 
+    letter-spacing: 1px;
+}
+
+.btn-back {
+    padding: 10px 20px;
+    background-color: #fff;
+    border: 2px solid #111; 
+    border-radius: 4px;    
+    color: #111;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: #111;
+    color: #fff;
+}
+
+.customer-info-card {
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border: 1px solid #eaeaea;
+    border-top: 4px solid #dc3545;
+    margin-bottom: 30px;
+}
+
+.customer-info-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eaeaea;
+    color: #111;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.customer-info-card p {
+    margin: 10px 0;
+    font-size: 1.05rem;
+    color: #444;
+}
+
+.customer-info-card strong {
+    color: #111;
+    display: inline-block;
+    width: 110px; 
+}
+
+.admin-table {
+    width: 100%;
+    background-color: #fff;
+    border-collapse: collapse;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border: 1px solid #eaeaea;
+}
+
+.admin-table thead {
+    background-color: #111;
+    color: #fff;
+}
+
+.admin-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.admin-table td {
+    padding: 16px 20px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eaeaea;
+    color: #111;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.table-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #eaeaea;
+}
+
+.font-bold {
+    font-weight: 800;
+    color: #111;
+}
+
+.admin-table tfoot td {
+    padding: 14px 20px;
+    background-color: #fff;
+    border-bottom: none;
+}
+
+.admin-table tfoot tr:first-child td {
+    border-top: 2px solid #111;
+    padding-top: 20px; 
+}
+
+.text-right {
+    text-align: right;
+    padding-right: 40px !important; 
+}
+
+.discount-row td {
+    color: #dc3545; 
+    font-weight: bold;
+}
+
+.grand-total-row td {
+    padding-bottom: 30px; 
+    font-size: 1.1rem;
+}
+
+.grand-total-amount {
+    font-weight: 900; 
+    color: #111; 
+    font-size: 1.4rem;
+}
