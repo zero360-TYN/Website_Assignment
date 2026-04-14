@@ -39,13 +39,25 @@ include root('_header.php');
                             <span class="order-date"><?= date('d M Y, H:i', strtotime($o->order_date)) ?></span>
                         </div>
                         <div class="header-total">
-                            Total: RM <?= number_format($o->total_amount, 2) ?>
+                            <div class="price-row">
+                                <span class="label">Total:</span>
+                                <span class="amount">RM <?= number_format($o->total_amount, 2) ?></span>
+                            </div>
+                        <?php if($o->discount_amount > 0):?>
+                            <div class="price-row discount">
+                                <span class="label">Discount:</span>
+                                <span class="amount">- RM <?= number_format($o->discount_amount, 2) ?></span>
+                            </div>
+                            <div class="price-row total-after-discount">
+                                <span class="label">Grand Total:</span>
+                                <span class="amount">RM <?= number_format($o->grand_total, 2) ?></span>
+                            </div>
+                        <?php endif;?>
                         </div>
                     </div>
 
                     <div class="order-body">
                         <?php 
-                        // 执行刚才准备好的 SQL，抓取当前订单的商品详情
                         $item_stm->execute([$o->order_id]);
                         $items = $item_stm->fetchAll();
                         

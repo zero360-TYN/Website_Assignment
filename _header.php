@@ -41,6 +41,9 @@
         </form>
 
         <div class="header-right">
+            <a href="/user/voucher.php">
+                <img src="/img/icon/voucher.png" class="icon-voucher">
+            </a>
             <a href="/user/wishList.php">
                 <img src="/img/icon/my-wish-list.png" class="icon-wishlist">
             </a>
@@ -50,7 +53,7 @@
 
             <div class="user-menu-wrapper" style="display:inline-block; position:relative;">
                 <?php if (!$_user): ?>
-                    <img src="/img/icon/user.png" class="icon-user" id="userAvatar" style="cursor:pointer;">
+                    <img src="/img/icon/user.png" class="icon-user" id="userAvatar">
 
                     <div id="userDropdown" class="dropdown-menu" style="display:none;">
                         <hr>
