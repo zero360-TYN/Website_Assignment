@@ -1,0 +1,144 @@
+main {
+    max-width: 1000px;
+    width: 90%;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-title {
+    font-size: 2rem;
+    color: #000000;
+    margin: 0 0 5px 0;
+}
+
+.admin-subtitle {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.btn-back {
+    background: #333;
+    color: white;
+    padding: 8px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.btn-back:hover {
+    background: #555;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+}
+
+.member-table-container {
+    background: #fff;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.member-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.member-table th,
+.member-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.member-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #555;
+}
+
+.member-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-badge.active {
+    background: #4caf50;
+    color: white;
+}
+
+.status-badge.blocked {
+    background: #f44336;
+    color: white;
+}
+
+.btn-block {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-unblock {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-block:hover, 
+.btn-unblock:hover {
+    opacity: 0.8;
+}
+
+.reason-input {
+    padding: 5px 8px;
+    width: 100px;
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.role-select {
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+}
+
+.text-muted {
+    color: #999;
+    font-size: 12px;
+}

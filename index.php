@@ -23,8 +23,7 @@ global $_user;
         <?php if (!$_user): ?>
             <p>New here or returning customer?</p>
             <div class="auth-buttons">
-                <a href="/user/login.php" class="btn-secondary">Login</a>
-                <a href="/user/register.php" class="btn-secondary outline">Register</a>
+                <a href="/user/login.php" class="btn-secondary">Login/Register</a>
             </div>
         <?php else: ?>
             <p>Welcome back, <b><?= htmlspecialchars($_user->name) ?></b>!</p>

@@ -43,7 +43,18 @@
             return $value;
         }
     }
-    
+    if (!isset($_SESSION['user']) && isset($_COOKIE['remember_token'])) {
+        $token = $_COOKIE['remember_token'];
+
+        $sql = "SELECT * FROM user WHERE remember_token = ?";
+        $stmt = $_db->prepare($sql);
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+
+        if ($user && $user->is_blocked != 1) {
+            $_SESSION['user'] = $user;
+        }
+    }
     //user
     $_user = $_SESSION['user'] ?? null;
     // Login user
@@ -94,6 +105,25 @@
         }
         temp('info','Login to continue !');
         redirect('/user/login.php');
+    }
+    function get_mail() {
+        require_once 'lib/PHPMailer.php';
+        require_once 'lib/SMTP.php';
+        require_once 'lib/Exception.php';
+
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'testwebbased2025@gmail.com'; 
+        $mail->Password = 'tbdy mfkr onxy xhdn';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->setFrom('testwebbased2025@gmail.com', 'Your Website');
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+
+        return $mail;
     }
 //=========================================shopping cart======================================
     
@@ -252,4 +282,61 @@
         $value = encode($GLOBALS[$key] ?? '');
         echo "<input type='search' id='$key' name='$key' value='$value' $attr>";
     }
+    
+    function get_file($key) {
+    if (!isset($_FILES[$key]) || $_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+    return (object)$_FILES[$key];
+}
+
+    function save_photo($f, $folder, $width = 200, $height = 200) {
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+
+        $ext = pathinfo($f->name, PATHINFO_EXTENSION);
+        $filename = 'user_' . time() . '_' . uniqid() . '.' . $ext;
+        $filepath = $folder . $filename;
+
+        move_uploaded_file($f->tmp_name, $filepath);
+        $lib_path = __DIR__ . '/lib/SimpleImage.php';
+        if (file_exists($lib_path)) {
+            require_once $lib_path;
+            $image = new \claviska\SimpleImage();
+            $image->fromFile($filepath)
+                  ->thumbnail($width, $height)
+                  ->toFile($filepath);
+        }
+
+        return $filename;
+    }
+    function save_profile_photo($file, $user_id) {
+        $upload_dir = __DIR__ . '/img/user_Icon/';
+
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'message' => 'Upload failed'];
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (!in_array($ext, $allowed)) {
+            return ['success' => false, 'message' => 'Invalid file type'];
+        }
+
+        $filename = 'user_' . $user_id . '_' . time() . '.' . $ext;
+        $filepath = $upload_dir . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+            return ['success' => true, 'filename' => $filename];
+        }
+
+        return ['success' => false, 'message' => 'Save failed'];
+    }
+
 ?>

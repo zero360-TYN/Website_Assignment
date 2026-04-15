@@ -14,8 +14,11 @@
         } else {
             echo '<link rel="stylesheet" href="/css/' . $_mainCssFileName . '.css">';
         }
+
     }
+
     ?>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/body.css">
     <link rel="stylesheet" href="/css/footer.css">
@@ -62,8 +65,7 @@
                         <a href="/user/register.php">Register</a>
                     </div>
                 <?php else: ?>
-                    <img src="/img/user_Icon/<?= $_user->photo ?>" class="icon-user" id="userAvatar" style="cursor:pointer;">
-
+                    <img src="/img/user_Icon/<?= $_user -> photo ?>" class="icon-user" id="userAvatar" style="cursor:pointer;">
                     <div id="userDropdown" class="dropdown-menu" style="display:none;">
                         <div class="menu-info">Hi <?= $_user->name ?></div>
                         <hr>

@@ -68,7 +68,7 @@ include root('_header.php');
             <div class="manage-arrow">→</div>
         </a>
 
-        <a href="member_maintenance.php" class="manage-card">
+        <a href="/admin/memberMaintenance.php" class="manage-card">
             <div class="manage-icon">🛡️</div>
             <div class="manage-text">
                 <h4>Member Maintenance</h4>
