@@ -3,6 +3,27 @@
     $_mainCssFileName = "table";
     require 'php/_base.php';
     include 'php/_header.php';
+
+    $totalpdtcount = 0;
+    $totalpdtcount = getCount($_db, "SELECT COUNT(*) AS total FROM product");
+
+    $instockcount = 0;
+    $instockcount = getCount($_db, "SELECT COUNT(*) as total FROM product WHERE stock > 30 ");
+
+    $lowstockcount = 0;
+    $lowstockcount = getCount($_db, "SELECT COUNT(*) AS total FROM product WHERE stock < 30");
+
+    $categorycount = 0;
+    $categorycount = getCount($_db, "SELECT COUNT(DISTINCT category) AS total FROM product");
+
+    $voucherCount = 0;
+    $voucherCount = getCount($_db, "SELECT COUNT(*) AS total FROM voucher");
+
+    $result = $_db->query("SELECT * FROM product");
+    $product = $result->fetch_all(MYSQLI_ASSOC);
+
+    $voucherResult = $_db->query("SELECT promo_code, discount_price FROM voucher");
+    $voucher = $voucherResult->fetch_all(MYSQLI_ASSOC);
 ?>
 <main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -14,25 +35,84 @@
             <div class="dashboardDisplay">
                 <div class="dashboardTPcontainer">
                     <label>Total Products</label>
-                    <label id="totalProductCount">0</label>
+                    <label id="totalProductCount"><?= $totalpdtcount ?></label>
                     <label id="totalProductStatus">Active</label>
                 </div>
+
                 <div class="dashboardIScontainer">
                     <label>In Stock</label>
-                    <label id="inStockCount">0</label>
+                    <label id="inStockCount"><?= $instockcount ?></label>
                     <label id="inStockStatus">Available</label>
                 </div>
                 <div class="dashboardLScontainer">
                     <label>Low Stock</label>
-                    <label id="lowStockCount">0</label>
+                    <label id="lowStockCount"><?= $lowstockcount ?></label>
                     <label id="lowStockStatus">Alert</label>
                 </div>
                 <div class="dashboardCcontainer">
                     <label>Categories</label>
-                    <label id="categoriesCount">0</label>
+                    <label id="categoriesCount"><?= $categorycount ?></label>
                     <label id="categoriesStatus">Types</label>
                 </div>
+                <div class="dashboardVcontainer">
+                    <label>Voucher</label>
+                    <label id="voucherCount"><?= $voucherCount ?></label>
+                    <label>Click here to create voucher</label>
+                </div>
 
+            </div>
+            <div class="addVoucher">
+                <div class="voucher_container">
+                    <div class="vouchertop">
+                        <label id="voucherwd">Voucher Information</label>
+                        <div id="vcaddCancel">✖</div>
+                    </div>
+                    <div class="voucher_row">
+                        <table class="vouchertable">
+                            <thead>
+                                <tr>
+                                    <?php
+                                        $voucherHeader = ["Promo Code", "Discount Price", "Action"];
+
+                                        foreach($voucherHeader as $header) {
+                                            echo "<th>$header</th>";
+                                        }
+                                    ?>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                               <?php foreach($voucher as $voucherRow): ?>
+                                    <tr>
+                                        <td><?= $voucherRow['promo_code'] ?></td>
+                                        <td><?= $voucherRow['discount_price'] ?></td>
+                                        <td>
+                                            <button class="vcdl" data-id="<?= $voucherRow['promo_code'] ?>">Delete</button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            </tbody>
+                        </table>
+
+                        <form class="voucherinput" onsubmit="addVoucher(event)">
+                            <input type="hidden" name="action" value="create">
+                            <?php 
+                                $voucherinput = [
+                                    ["id" => "promo_code", "label" => "Promo Code"],
+                                    ["id" => "discount_price", "label" => "Discount Price"]
+                                ];
+                                ?>
+                                <?php foreach ($voucherinput as $item): ?>
+                                    <label>
+                                        <?= $item['label'] ?>
+                                    </label>
+                                
+                                    <input type="text" id="<?= $item['id'] ?>">
+                                <?php endforeach; ?>
+                            <button type="submit" onclick="addVoucher()">Submit</button>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div id="addrow">
                 <button id="addBtn" onclick="addProduct_popup()">Add Product</button>
@@ -86,10 +166,8 @@
                                         
                                     </div>
             
-
                                     <label for="productCategory">Category</label>
                                     <input type="text" id="pdtcy" maxlength="50" placeholder="e.g. Limited Edition, Classic, Art Toy">
-
 
                                 </form>
 
@@ -97,9 +175,13 @@
                                     <div class="detailRow">
                                         <div id="detailImage"></div>
                                         <div class="detailInfo">
-                                            <label id="detailName"></label>
-                                            <label id="detailPrice"></label>
-                                            <label id="detailStock"></label>
+                                            <?php 
+                                            $details = ["detailName", "detailPrice", "detailStock"];
+
+                                            foreach($details as $detail) {
+                                                echo '<label id="'.$detail.'"></label>';
+                                            }
+                                            ?>
                                             <hr>
                                             <div>
                                                 <label class="detailTitle">Category</label>
@@ -115,7 +197,6 @@
                                                 <label id="detailDate">-</label>
                                             </div>
                                         </div>
-
 
                                     </div>
                                     <div class="detailRowDescription">
@@ -136,14 +217,36 @@
         <div class="container">
             <table id="pdtable">
                 <tr>
-                    <th>ID</th>
-                    <th>Photo</th>
-                    <th>Product Name</th>
-                    <th>Category</th>
-                    <th>Price (RM)</th>
-                    <th>Stock</th>
-                    <th>Action</th>
+                <?php
+                $header = ["ID", "Photo", "Product Name", "Category", "Price (RM)", "Stock", "Action"];
+                
+                foreach ($header as $head) {
+                    echo "<th>$head</th>";
+                }
+                ?>
                 </tr>
+                <?php foreach($product as $row):?>
+                <tr>
+                    <td>#<?=  $row['product_id'] ?></td>
+                    <td><img src="image/<?= $row['image'] ?>" width="50" height="50" style="border-radius:5px; object-fit:cover;"></td>
+                    <td><?= $row['name'] ?></td>
+                    <td><?= $row['category'] ?></td>
+                    <td><?= number_format($row['price'], 2) ?></td>
+                    <td><?= $row['stock'] ?></td>
+
+                    <td>
+                        <button class="pdtet"
+                            data-id="<?= $row['product_id'] ?>"
+                            data-name="<?= $row['name'] ?>"
+                            data-category="<?= $row['category'] ?>"
+                            data-price="<?= $row['price'] ?>"
+                            data-stock="<?= $row['stock'] ?>"
+                            data-description="<?= $row['description'] ?>"
+                            data-date="<?= date('Y-m-d', strtotime($row['release_date'])) ?>">Edit</button>
+                        <button class="pdtdl" data-id="<?= $row['product_id'] ?>">Delete</button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
             </table>
         </div>
     </div>

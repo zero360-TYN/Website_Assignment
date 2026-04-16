@@ -69,7 +69,7 @@ body {
     gap: 25px;
 }
 
-.dashboardTPcontainer, .dashboardIScontainer, .dashboardLScontainer, .dashboardCcontainer{
+.dashboardTPcontainer, .dashboardIScontainer, .dashboardLScontainer, .dashboardCcontainer, .dashboardVcontainer{
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -83,14 +83,20 @@ body {
     border: 2px solid rgb(220, 220, 220);
 }
 
+.dashboardVcontainer {
+    background-color: rgba(207, 243, 108, 0.3);
+    cursor: pointer;
+
+}
+
 .dashboardTPcontainer label:first-child, .dashboardIScontainer label:first-child, 
-.dashboardLScontainer label:first-child, .dashboardCcontainer label:first-child{
+.dashboardLScontainer label:first-child, .dashboardCcontainer label:first-child, .dashboardVcontainer label:first-child{
     font-size: 15px;
     color: rgb(155, 155, 155);
     font-weight: bold;
 }
 
-#totalProductCount, #inStockCount, #lowStockCount, #categoriesCount {
+#totalProductCount, #inStockCount, #lowStockCount, #categoriesCount, #voucherCount {
     font-size: 25px;
     font-weight: 800;
 }
@@ -132,6 +138,12 @@ body {
     font-size: 14px;
 }
 
+.dashboardVcontainer label:last-child {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgb(134, 134, 134);
+}
+
 /*--------END--------*/
 
 
@@ -155,7 +167,7 @@ body {
 }
 /*--------END--------*/
 
-#addwd {
+#addwd{
     padding: 10px;
     margin-top: 15px;
     margin-left: 15px;
@@ -316,7 +328,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-th {
+#pdtable th {
     white-space: nowrap;
     background-color: #000000;
     color: white;
@@ -325,7 +337,7 @@ th {
     font-weight: 600;
 }
 
-td {
+#pdtable td {
     text-align: left;
     padding: 7px 40px;
     word-break: break-word;
@@ -511,3 +523,137 @@ td {
     justify-content: space-between;
 }
 /*----------END---------*/
+.addVoucher {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* popup box */
+.voucher_container {
+    background: white;
+    width: 90%;
+    max-width: 50rem;
+    height: 250px;
+    border-radius: 16px;
+    padding: 20px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* title */
+#voucherwd {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.voucher_row {
+    display: flex;
+    flex-direction: row;
+}
+
+.voucherinput {
+    display: flex;
+    flex-direction: column;
+}
+.voucherinput label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.voucherinput input {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    margin-left: 15px;
+}
+
+input:focus {
+    border-color: rgb(63, 63, 63);
+}
+
+.voucherinput button {
+    margin-left: 12%;
+    margin-top: 10px;
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 5px 20px;
+    font-weight: 530;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.vouchertable {
+    flex: 0.9;
+    width: 60%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+}
+
+.vouchertable th:nth-child(1) {
+    width: 30%;
+}
+
+.vouchertable th:nth-child(2) {
+    width: 35%;
+}
+
+.vouchertable td {
+    text-align: left;
+    padding: 3px 25px;
+    word-break: break-word;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+
+}
+.vouchertable th {
+    white-space: nowrap;
+    background-color: #000000;
+    color: white;
+    text-align: left;
+    padding: 5px 20px;
+    font-weight: 600;
+}
+
+
+#vcaddCancel{
+    cursor: pointer;
+}
+
+.vouchertop {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.vcdl {
+    color: rgb(197, 6, 6);
+    background-color: rgba(236, 79, 79, 0.4);
+    border: none;
+    height: 25px;
+    font-weight: 550;
+    border-radius: 4px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}

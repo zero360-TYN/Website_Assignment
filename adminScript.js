@@ -1,22 +1,3 @@
-//-----------------------ERROR POPUP--------------------------------
-
-
-function addData() {
-    let currentRow = null;
-
-    var product_name = $("#pdtnme").val();
-    var product_price = $("#pdtpc").val();
-    var product_category = $("#pdtcy").val();
-    var product_stock = $("#pdtsk").val();
-    var product_description = $("#pdtdc").val();
-    var product_discount = $("#pdtdt").val();
-    var product_release_date = $("#pdtrd").val();
-
-    var numError = [
-        {name: "Price", value: parseFloat(product_price)},
-        {name: "Stock", value: parseInt(product_stock)}];
-
-    var table = $("#pdtable")[0]; // DOM table
     const errorRow = $("#errorrow");
     const errorMessage = $("#error_dly");
     const okBtn = $("#okError");
@@ -29,6 +10,25 @@ function addData() {
     okBtn.off("click").on("click", function () {
         errorRow.hide();
     });
+
+//-----------------------ERROR POPUP--------------------------------
+function addData() {
+    let currentRow = null;
+
+    var product_name = $("#pdtnme").val();
+    var product_price = $("#pdtpc").val();
+    var product_category = $("#pdtcy").val();
+    var product_stock = $("#pdtsk").val();
+    var product_description = $("#pdtdc").val();
+    var product_discount = $("#pdtdt").val();
+    var product_release_date = $("#pdtrd").val();
+
+    var editId = $("#pdtadd").data("edit-id");
+    var numError = [
+        {name: "Price", value: parseFloat(product_price)},
+        {name: "Stock", value: parseInt(product_stock)}];
+
+    var table = $("#pdtable")[0]; // DOM table
 
     if (product_name == "" || product_price == "" 
         || product_category == "" || product_stock == "" 
@@ -57,7 +57,16 @@ function addData() {
     }
 
     for (var i = 1; i < table.rows.length; i++) {
-        let existingname = $(table.rows[i].cells[2]).text();
+
+        let row = table.rows[i];
+        let existingname = $(row.cells[2]).text();
+
+        let existingId = $(row.cells[0]).text().replace("#", "").trim();;
+
+
+        if (editId && existingId == editId) {
+            continue;
+        }
 
         if (product_name.toLowerCase() == existingname.toLowerCase()) {
             showError("This product name already exists!");
@@ -65,60 +74,60 @@ function addData() {
         }
     }
 
-    var row = table.insertRow();
+    var formData = new FormData();
 
-    var cell0 = row.insertCell(0);
-    var cell1 = row.insertCell(1);
-    var cell2 = row.insertCell(2);
-    var cell3 = row.insertCell(3);
-    var cell4 = row.insertCell(4);
-    var cell5 = row.insertCell(5);
-    var cell6 = row.insertCell(6);
-
-    
-
-    cell0.innerHTML = "-";
+    formData.append("name", $("#pdtnme").val());
+    formData.append("price", $("#pdtpc").val());
+    formData.append("description", $("#pdtdc").val());
+    formData.append("release_date", $("#pdtrd").val());
+    formData.append("stock", $("#pdtsk").val());
+    formData.append("category", $("#pdtcy").val());
 
     var file = $("#uploadImg")[0].files[0];
-
     if(file) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            cell1.innerHTML = '<img src= "' + e.target.result + '" style="width: 50px; height: 50px; border-radius: 5px; object-fit: cover;">';
-        }
-        reader.readAsDataURL(file);
+        formData.append("image", file);
+    }
+    
+    if (editId) {
+        formData.append("id", editId)
+        
+        $.ajax({
+            url: "updateProduct.php",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function(response) {
+                var lines = response.trim().split('\n');
+                var lastLine = lines[lines.length - 1].trim();
+
+                if(lastLine.trim() === "Success") {
+                    location.reload();
+                }
+            }
+        })
     } else {
-        cell1.innerHTML = '-';
+
+        $.ajax({
+            url: "addProduct.php",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function(response) {
+                var lines = response.trim().split('\n');
+                var lastLine = lines[lines.length - 1].trim();
+
+                if(lastLine.trim() === "Success") {
+                    location.reload();
+                } else {
+                    alert(response);
+                }
+            }
+        });
     }
-    
-    cell2.innerHTML = product_name;
-    cell3.innerHTML = product_category;
-    cell4.innerHTML = parseFloat(product_price).toFixed(2);
-    cell5.innerHTML = product_stock;
-    $(cell5).text(product_stock).attr('data-max', product_stock);
-    cell6.innerHTML = '<button class="pdtet">Edit</button><button class="pdtdl">Delete</button>';
-
-    updateDashboard();
-
-    $('#pdtnme, #pdtpc, #pdtcy, #pdtsk, #pdtrd, #uploadImg, #pdtdt, #pdtdc').val('');
-    $('.uploadArea').text('Click or Drag to upload product image');
-
-    var pdtdlbtn = cell6.querySelector(".pdtdl");
-    
-    pdtdlbtn.addEventListener("click", function() {
-        currentRow = row;
-        document.getElementById("deleterow").style.display = "flex";
-    });
-    document.getElementById("yesdelete").onclick = function() {
-        if (currentRow) {
-            currentRow.remove();
-        }
-        document.getElementById("deleterow").style.display = "none";
-    }
-    document.getElementById("canceldelete").onclick = function() {
-        document.getElementById("deleterow").style.display = "none";
-    }
-
 }
 
 function addProduct_popup() {
@@ -174,36 +183,6 @@ $(document).ready(function(){
     });
 });
 
-
-function updateDashboard() {
-    var total = $("#pdtable tr").length - 1;
-    var inStockCount = 0;
-    var lowStockCount = 0;
-    var categories = [];
-
-    $("#pdtable tr").slice(1).each(function() {
-        var currentStock = parseInt($(this).find("td").eq(5).text());
-        var initialStock = parseInt($(this).find("td").eq(5).attr('data-max'));
-        var percentage = (currentStock / initialStock) * 100;
-        var category = $(this).find("td").eq(3).text();
-
-        if (percentage > 30) {
-            inStockCount++;
-        } else if (percentage <= 30 && currentStock > 0) {
-            lowStockCount++;
-        }
-
-        if (!categories.includes(category)) {
-            categories.push(category);
-        }
-    });
-
-    $("#totalProductCount").text(total);
-    $("#inStockCount").text(inStockCount);
-    $("#lowStockCount").text(lowStockCount);
-    $("#categoriesCount").text(categories.length);
-}
-
 $('.uploadArea').on('dragover', function(e) {
     e.preventDefault();
 }).on('drop', function(e) {
@@ -217,3 +196,145 @@ $('#uploadImg').on('change', function() {
     var fileName = $(this)[0].files[0].name;
     $('.uploadArea').text(fileName);
 });
+
+
+
+/////////////////////////////////////////
+
+
+let deleteID = null;
+let deleteRow = null;
+
+$(document).on("click", ".pdtdl", function() {
+    deleteID = $(this).data("id");
+    deleteRow = $(this).closest("tr");
+
+    $("#deleterow").css("display", "flex");
+})
+
+$("#canceldelete").click(function() {
+    $("#deleterow").hide();
+})
+
+$("#yesdelete").click(function() {
+    $.post("deleteProduct.php", {id: deleteID}, function() {
+
+        deleteRow.remove();
+        $("#deleterow").hide();
+        location.reload(); //reload page
+    })
+})
+
+$(document).on("click", ".pdtet", function() {
+    var id = $(this).data("id");
+    var name = $(this).data("name");
+    var category = $(this).data("category");
+    var description = $(this).data("description");
+    var date = $(this).data("date");
+
+
+    $("#pdtnme").val(name);
+    $("#pdtpc").val($(this).data("price"));
+    $("#pdtsk").val($(this).data("stock"));
+    $("#pdtcy").val(category);
+    $("#pdtdc").val(description);
+    $("#pdtrd").val(date);
+
+    $("#pdtadd").text("Update →").data("edit-id", id);
+    $("#addPopup").css("display", "flex");
+
+    $('.productSideNav a').removeClass('active');
+    $('.productSideNav a:first').addClass('active');
+    $('.productLbl, .productPrice, .productDetails').hide();
+    $('.productLbl').show();
+})
+
+$(document).on("click", "#pdtaddCancel", function() {
+    $("#addPopup").hide();
+    $("#pdtadd").text("Submit →").removeData("edit-id");
+})
+
+$(document).on("click", "#vcaddCancel", function() {
+    $(".addVoucher").hide();
+})
+
+$(document).on("click", ".dashboardVcontainer", function() {
+    $(".addVoucher").css("display", "flex");
+})
+
+function addVoucher(e){
+    e.preventDefault();
+
+    var d_price = parseFloat($("#discount_price").val());
+
+    if (isNaN(d_price)) {
+        showError("Discount price must be digit!");
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append("action", "create");
+    formData.append("promo_code", $("#promo_code").val());
+    formData.append("discount_price", d_price);
+
+    fetch("addVoucher.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        location.reload();
+    });
+}
+
+let voucherCode = null;
+let voucherRow = null;
+
+$(document).on("click", ".vcdl", function() {
+    voucherCode = $(this).data("id"); // promo_code
+    voucherRow = $(this).closest("tr");
+
+    $("#deleterow").css("display", "flex");
+});
+
+$("#yesdelete").click(function() {
+    $.post("deleteProduct.php", {id: deleteID}, function() {
+
+        deleteRow.remove();
+        $("#deleterow").hide();
+        location.reload();
+    })
+})
+
+$("#yesdelete").click(function() {
+
+    // 👉 删除 Product
+    if (deleteID) {
+        $.post("deleteProduct.php", {id: deleteID}, function() {
+            deleteRow.remove();
+            location.reload();
+        });
+    }
+
+    // 👉 删除 Voucher
+    if (voucherCode) {
+        $.post("addVoucher.php", {
+            action: "delete",
+            promo_code: voucherCode
+        }, function() {
+            voucherRow.remove();
+            location.reload();
+        });
+    }
+
+    $("#deleterow").hide();
+
+    // reset
+    deleteID = null;
+    voucherCode = null;
+});
+
+$(document).on("click", "#canceldelete", function() {
+    $("#deleterow").hide();
+})
