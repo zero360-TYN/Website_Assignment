@@ -7,6 +7,11 @@ include root('_header.php');
 if (is_get()) {
     $wish_id = req('add_wish');
     if ($wish_id) {
+        if(is_deleted($wish_id)){
+            temp('info', "Failed to add to wishlist! : This product is deleted.");
+            redirect('shop.php');
+            exit();
+        }
         $info = toggle_wishlist($wish_id);
         $stm = $_db->prepare('SELECT * FROM product WHERE product_id =?');
         $stm->execute([$wish_id]);
@@ -16,7 +21,7 @@ if (is_get()) {
         exit();
     }
 }
-$product_arr = $_db->query('SELECT * FROM product');
+$product_arr = $_db->query('SELECT * FROM product WHERE release_date <= NOW() AND is_deleted = 0');
 if(is_post()){
 
     $id = req('product_id');
@@ -72,7 +77,8 @@ if(is_post()){
                    <?= $is_wished ? '❤️' : '🤍' ?>
                 </a>
                 <div class="info">
-                    <?= $name ?> | RM <?= $price ?>
+                    <?= $name ?><br>
+                    RM <?= $price ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -87,7 +93,7 @@ if(is_post()){
                 <div class="quantity-selector">
                     <label>Quantity：</label>
                     <button id="minusBtn" type="button">-</button>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" readonly>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="100">
                     <button id="plusBtn" type="button">+</button>
                 </div>
                 <div class="popup-actions">

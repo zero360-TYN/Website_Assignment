@@ -1,6 +1,6 @@
 <?php
 require '../_base.php';
-
+auth();
 $wish_id = req('add_wish');
 if ($wish_id) {
     toggle_wishlist($wish_id);

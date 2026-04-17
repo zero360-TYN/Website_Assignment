@@ -1,3 +1,8 @@
+/* =========================================
+   极致潮玩风 2.0：白底波点墙 + 巨型盲盒海报 + 硬核黑框
+   ========================================= */
+
+/* 1. 大背景：与白色 Header 完美融合的浅灰色波点 */
 main {
     display: flex;
     flex-direction: column;
@@ -5,64 +10,98 @@ main {
     align-items: center;
     min-height: 70vh;
     text-align: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #fafafa;
+    background-color: #f8f8f8; 
+    background-image: radial-gradient(#d5d5d5 2px, transparent 2px);
+    background-size: 30px 30px;
 }
+
+/* 2. 海报框：把原本突兀的红背景变成一个巨大的立体包装盒 */
+.hero-content {
+    background-color: #E62A2A; 
+    width: 100%;
+    max-width: 1000px;
+    padding: 60px 40px;
+    border: 5px solid #000; 
+    box-shadow: 12px 12px 0px #000; 
+    border-radius: 16px; 
+    
+    /* 👇 核心修复：防止宽度溢出屏幕 */
+    box-sizing: border-box; 
+    /* 👇 视觉补偿：由于阴影向右偏 12px，我们让盒子向左移 6px 来达到视觉绝对居中 */
+    transform: translateX(-6px); 
+    /* 👇 保证绝对水平居中，底部留 60px 空隙 */
+    margin: 0 auto 60px auto; 
+}
+
 .hero-logo {
     max-width: 250px;
     margin-bottom: 20px;
 }
 
 .hero-title {
-    font-size: 3rem;
-    color: #111;
+    font-size: 3.5rem;
+    color: #ffffff; 
     margin: 0 0 15px 0;
-    font-weight: 800;
+    font-weight: 900;
+    text-transform: uppercase; 
+    -webkit-text-stroke: 2px #000; /* 白字黑边 */
+    text-shadow: 4px 4px 0px #000;
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
-    color: #666;
-    margin: 0 0 40px 0;
+    font-size: 1.3rem;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 0 auto 40px auto;
     max-width: 600px;
+    text-shadow: 2px 2px 0px #000; 
 }
 
 .hero-action {
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 }
 
+/* 3. 核心按钮：波普块风格 */
 .btn-primary {
     display: inline-block;
     padding: 15px 40px;
     font-size: 1.3rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: #dc3545; 
+    font-weight: 900;
+    color: #000; 
+    background-color: #fff; 
     text-decoration: none;
-    border-radius: 50px; 
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border: 4px solid #000; 
+    box-shadow: 6px 6px 0px #000; 
+    transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-    background-color: #c82333;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    transform: translate(4px, 4px); /* 按压效果 */
+    box-shadow: 2px 2px 0px #000; 
 }
-
 .auth-section {
     background: #fff;
     padding: 30px 50px;
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0px #000;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    border: 1px solid #eaeaea;
+    color: #000; 
+    max-width: 800px;
+    width: 100%;
+    
+    box-sizing: border-box; 
+    transform: translateX(-4px); 
+    margin: 0 auto; 
 }
 
 .auth-section p {
     margin: 0 0 20px 0;
-    color: #555;
-    font-size: 1.1rem;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .auth-buttons {
@@ -72,45 +111,146 @@ main {
     flex-wrap: wrap;
 }
 
+/* 统一副按钮风格为潮玩风 */
 .btn-secondary {
     display: inline-block;
     padding: 10px 25px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #111;
+    font-weight: 900;
+    color: #000;
+    background-color: #fff;
     text-decoration: none;
-    border-radius: 6px;
-    border: 2px solid #111;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0px #000;
     transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-    background-color: #333;
-    border-color: #333;
-}
-
-.btn-secondary.outline {
-    background-color: transparent;
-    color: #111;
-}
-
-.btn-secondary.outline:hover {
-    background-color: #f8f9fa;
+    background-color: #f0f0f0;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #000;
 }
 
 .btn-danger {
     display: inline-block;
     padding: 10px 25px;
-    font-weight: bold;
-    color: #dc3545;
-    background-color: transparent;
+    font-weight: 900;
+    color: #fff;
+    background-color: #E62A2A;
     text-decoration: none;
-    border-radius: 6px;
-    border: 2px solid #dc3545;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0px #000;
     transition: all 0.2s ease;
 }
 
 .btn-danger:hover {
-    background-color: #dc3545;
-    color: #fff;
+    background-color: #c02020;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #000;
+}
+
+/* =========================================
+   Coming Soon (即将发售区) 潮玩统一化
+   ========================================= */
+
+.upcoming-section {
+    max-width: 1200px;
+    width: 100%;
+    margin: 60px auto 40px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #000;
+    margin-bottom: 40px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0px #ccc;
+}
+
+.upcoming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+/* 盲盒卡片也加上黑边和硬阴影 */
+.upcoming-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0px #000;
+    transition: all 0.2s ease;
+}
+
+.upcoming-card:hover {
+    transform: translate(4px, 4px);
+    box-shadow: 4px 4px 0px #000;
+}
+
+.img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 260px; 
+    background-color: #ffffff;
+    border-bottom: 4px solid #000; /* 把图片和文字用黑线隔开 */
+}
+
+.img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    padding: 15px; 
+    box-sizing: border-box;
+}
+
+/* 日期徽章 */
+.date-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #E62A2A;
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0px #000;
+    text-transform: uppercase;
+}
+
+.card-info {
+    padding: 15px 20px;
+    text-align: left;
+}
+
+.category-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #000;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #27ae60;
+    margin: 0;
 }

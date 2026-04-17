@@ -43,7 +43,18 @@
             return $value;
         }
     }
-    
+    if (!isset($_SESSION['user']) && isset($_COOKIE['remember_token'])) {
+        $token = $_COOKIE['remember_token'];
+
+        $sql = "SELECT * FROM user WHERE remember_token = ?";
+        $stmt = $_db->prepare($sql);
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+
+        if ($user && $user->is_blocked != 1) {
+            $_SESSION['user'] = $user;
+        }
+    }
     //user
     $_user = $_SESSION['user'] ?? null;
     // Login user
@@ -95,6 +106,25 @@
         temp('info','Login to continue !');
         redirect('/user/login.php');
     }
+    function get_mail() {
+        require_once 'lib/PHPMailer.php';
+        require_once 'lib/SMTP.php';
+        require_once 'lib/Exception.php';
+
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'testwebbased2025@gmail.com'; 
+        $mail->Password = 'tbdy mfkr onxy xhdn';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->setFrom('testwebbased2025@gmail.com', 'Your Website');
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+
+        return $mail;
+    }
 //=========================================shopping cart======================================
     
     function get_cart() {
@@ -142,6 +172,16 @@
         $cart = get_cart();
 
         if (is_exists($id, 'product', 'product_id') && $unit >= 1) {
+            if (is_deleted($id)) {
+                temp('info', "Product delete from cart! : This product is deleted.");
+                unset($cart[$id]);
+                set_cart($cart);
+                redirect();
+                exit();
+            }
+             else{
+                temp('info', "Product quantity updated!");
+            }
             $cart[$id] = $unit;
             ksort($cart);
         }
@@ -170,7 +210,9 @@
 
         $ins_stm = $_db->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
         foreach ($cart as $product_id => $quantity) {
-            $ins_stm->execute([$user_id, $product_id, $quantity]);
+            if (is_exists($product_id, 'product', 'product_id') && $quantity >= 1 && !is_deleted($product_id)) {
+                $ins_stm->execute([$user_id, $product_id, $quantity]);
+            }
         }
     }
     //===============================wishlist=============================
@@ -190,7 +232,14 @@
         if (is_in_wishlist($product_id)) {
             $stm = $_db->prepare("DELETE FROM wishlist WHERE user_id = ? AND product_id = ?");
             $stm->execute([$_user->user_id, $product_id]);
-            return "removed";
+            if(is_deleted($product_id)){
+                temp('info', "Product removed from wishlist! : This product is deleted.");
+                redirect();
+                exit();
+            }
+            else{
+                temp('info', "Product removed from wishlist!");
+            }
         } else {
             $stm = $_db->prepare("INSERT INTO wishlist (user_id, product_id) VALUES (?, ?)");
             $stm->execute([$_user->user_id, $product_id]);
@@ -205,19 +254,20 @@
         $stm = $_db->prepare("
             SELECT p.* FROM product p
             JOIN wishlist w ON p.product_id = w.product_id
-            WHERE w.user_id = ?
+            WHERE w.user_id = ? AND p.release_date <= NOW() AND p.is_deleted = 0
             ORDER BY w.added_date DESC
         ");
         $stm->execute([$_user->user_id]);
         return $stm->fetchAll();
     }
-
     // Global PDO object(PHP DATABASE object)
-    $_db = new PDO('mysql:dbname=cematrixdb', 'root', '', [
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-    ]);
-
-
+    try {
+        $_db = new PDO('mysql:host=localhost;dbname=cematrixdb;charset=utf8', 'root', '', [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ]);
+    } catch (PDOException $e) {
+        die("database link error: " . $e->getMessage());
+    }
     function is_exists($value, $table, $field) {
         global $_db;
 
@@ -251,5 +301,76 @@
     function html_search($key, $attr = '') {
         $value = encode($GLOBALS[$key] ?? '');
         echo "<input type='search' id='$key' name='$key' value='$value' $attr>";
+    }
+    
+    function get_file($key) {
+    if (!isset($_FILES[$key]) || $_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+    return (object)$_FILES[$key];
+}
+
+    function save_photo($f, $folder, $width = 200, $height = 200) {
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+
+        $ext = pathinfo($f->name, PATHINFO_EXTENSION);
+        $filename = 'user_' . time() . '_' . uniqid() . '.' . $ext;
+        $filepath = $folder . $filename;
+
+        move_uploaded_file($f->tmp_name, $filepath);
+        $lib_path = __DIR__ . '/lib/SimpleImage.php';
+        if (file_exists($lib_path)) {
+            require_once $lib_path;
+            $image = new \claviska\SimpleImage();
+            $image->fromFile($filepath)
+                  ->thumbnail($width, $height)
+                  ->toFile($filepath);
+        }
+
+        return $filename;
+    }
+    function save_profile_photo($file, $user_id) {
+        $upload_dir = __DIR__ . '/img/user_Icon/';
+
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'message' => 'Upload failed'];
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (!in_array($ext, $allowed)) {
+            return ['success' => false, 'message' => 'Invalid file type'];
+        }
+
+        $filename = 'user_' . $user_id . '_' . time() . '.' . $ext;
+        $filepath = $upload_dir . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+            return ['success' => true, 'filename' => $filename];
+        }
+
+        return ['success' => false, 'message' => 'Save failed'];
+    }
+    
+    function getCount($db, $sql) {
+        return $db->query($sql)->fetchColumn();
+    }
+    function is_deleted($product_id) {
+        global $_db;
+
+        $sql = "SELECT is_deleted FROM product WHERE product_id = ?";
+        $stmt = $_db->prepare($sql);
+        $stmt->execute([$product_id]);
+
+        $status = $stmt->fetchColumn();
+
+        return ($status === false || $status == 1);
     }
 ?>
