@@ -193,6 +193,7 @@ function addVoucher(e){
     let d_price = parseFloat($("#discount_price").val());
 
     if (isNaN(d_price)) return showError("Discount price must be a number!");
+    if(d_price <= 0) return showError("Discount price cannot be negative or Zero !");
 
     let formData = new FormData();
     formData.append("action", "create_voucher"); 

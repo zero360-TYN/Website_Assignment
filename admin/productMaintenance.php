@@ -7,7 +7,6 @@ if (is_post()) {
     if ($action === 'create_voucher') {
         $promo_code = $_POST['promo_code'] ?? '';
         $discount_price = $_POST['discount_price'] ?? '';
-
         try {
             $stmt = $_db->prepare("INSERT INTO voucher (promo_code, discount_price) VALUES (?, ?)");
             $stmt->execute([$promo_code, $discount_price]);
@@ -32,7 +31,7 @@ if (is_post()) {
     if ($action === 'delete_voucher') {
         $promo_code = trim($_POST['promo_code'] ?? '');
 
-        if (empty($promo_code)) {
+        if (empty($promo_code) ) {
             echo "Error: Promo code is empty.";
             exit;
         }
@@ -367,7 +366,6 @@ $voucher = $voucherResult->fetchAll();
             </div>
         </div>
     </div>
-
     <div id="errorrow" class="error">
         <div class="error_container">
             <div id="error_dly"></div>

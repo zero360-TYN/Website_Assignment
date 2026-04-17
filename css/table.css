@@ -423,12 +423,14 @@ body {
     height: 100%;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .error_container {
     width: 300px;
     height: 140px;
     background-color: white;
+    z-index: 9999;
 }
 
 .errorbtn {

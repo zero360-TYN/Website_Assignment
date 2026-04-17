@@ -54,7 +54,7 @@ include root('_header.php');
             <div class="manage-icon">🏷️</div>
             <div class="manage-text">
                 <h4>Product Maintenance</h4>
-                <p>Add, edit, or delete products and update inventory stock.</p>
+                <p>Add, edit, or delete products and update inventory stock and Vouchers.</p>
             </div>
             <div class="manage-arrow">→</div>
         </a>
@@ -72,7 +72,7 @@ include root('_header.php');
             <div class="manage-icon">🛡️</div>
             <div class="manage-text">
                 <h4>Member Maintenance</h4>
-                <p>Manage user accounts, reset passwords, and assign roles.</p>
+                <p>Assign roles, block/unblock users,</p>
             </div>
             <div class="manage-arrow">→</div>
         </a>
