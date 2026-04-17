@@ -52,7 +52,18 @@ if (isset($_POST['change_role'])) {
     redirect(); 
     exit;
 }
-$users = $_db->query("SELECT * FROM user ORDER BY user_id ASC")->fetchAll();
+// 获取搜索词
+$search = trim($_GET['search'] ?? '');
+
+if ($search !== '') {
+    $sql = "SELECT * FROM user WHERE name LIKE ? OR email LIKE ? ORDER BY user_id ASC";
+    $params = ["%$search%", "%$search%"];
+    $stmt = $_db->prepare($sql);
+    $stmt->execute($params);
+    $users = $stmt->fetchAll();
+} else {
+    $users = $_db->query("SELECT * FROM user ORDER BY user_id ASC")->fetchAll();
+}
 
 $_title = 'Member Maintenance';
 $_mainCssFileName = 'memberMaintenance';
@@ -71,7 +82,16 @@ include '../_header.php';
     <?php if (isset($success)): ?>
         <div class="alert-success"><?= $success ?></div>
     <?php endif; ?>
-
+    <div class="search-bar-container">
+        <form method="GET" class="member-search-form">
+            <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" 
+                   placeholder="Search by name or email..." class="admin-search-input">
+            <button type="submit" class="btn-search">Search</button>
+            <?php if ($search !== ''): ?>
+                <a href="?" class="btn-clear">Clear</a>
+            <?php endif; ?>
+        </form>
+    </div>
     <div class="member-table-container">
         <table class="member-table">
             <thead>

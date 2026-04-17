@@ -7,7 +7,7 @@ if (!$keyword) {
     redirect('/product/shop.php'); 
     exit;
 }
-$stm = $_db->prepare("SELECT * FROM product WHERE name LIKE ?");
+$stm = $_db->prepare("SELECT * FROM product WHERE name LIKE ? AND release_date <= NOW()");
 $stm->execute(["%$keyword%"]);
 $products = $stm->fetchAll();
 

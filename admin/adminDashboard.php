@@ -50,7 +50,7 @@ include root('_header.php');
 
     <h3 class="section-heading">System Management</h3>
     <nav class="management-grid">
-        <a href="product_maintenance.php" class="manage-card">
+        <a href="/admin/productMaintenance.php" class="manage-card">
             <div class="manage-icon">🏷️</div>
             <div class="manage-text">
                 <h4>Product Maintenance</h4>

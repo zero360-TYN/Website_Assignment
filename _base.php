@@ -241,13 +241,14 @@
         $stm->execute([$_user->user_id]);
         return $stm->fetchAll();
     }
-
     // Global PDO object(PHP DATABASE object)
-    $_db = new PDO('mysql:dbname=cematrixdb', 'root', '', [
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-    ]);
-
-
+    try {
+        $_db = new PDO('mysql:host=localhost;dbname=cematrixdb;charset=utf8', 'root', '', [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ]);
+    } catch (PDOException $e) {
+        die("database link error: " . $e->getMessage());
+    }
     function is_exists($value, $table, $field) {
         global $_db;
 
@@ -339,10 +340,8 @@
         return ['success' => false, 'message' => 'Save failed'];
     }
     
-    function getCount($_db, $sql) {
-        $stmt = $_db->prepare($sql);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc()['total'];
+    function getCount($db, $sql) {
+        return $db->query($sql)->fetchColumn();
     }
 
 ?>

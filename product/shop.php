@@ -16,7 +16,7 @@ if (is_get()) {
         exit();
     }
 }
-$product_arr = $_db->query('SELECT * FROM product');
+$product_arr = $_db->query('SELECT * FROM product WHERE release_date <= NOW()');
 if(is_post()){
 
     $id = req('product_id');

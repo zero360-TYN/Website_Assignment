@@ -14,7 +14,7 @@ if (is_post()) {
         $id = req('product_id');
         $qty = req('quantity');
         if($id){
-            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ?");
+            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ? AND release_date <= NOW()");
             $stm->execute([$id]);
             $p = $stm->fetch();
             if($qty > $p->stock){

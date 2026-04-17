@@ -1,8 +1,98 @@
 <?php
     $_title = 'admin';
     $_mainCssFileName = "table";
-    require 'php/_base.php';
-    include 'php/_header.php';
+    require '../_base.php';
+    // 集中处理所有的 POST 请求 (AJAX 提交)
+    if (is_post()) {
+        $action = $_POST['action'] ?? '';
+        // 1. 处理 Voucher (优惠券)
+        if ($action === 'create_voucher') {
+            $promo_code = $_POST['promo_code'] ?? '';
+            $discount_price = $_POST['discount_price'] ?? '';
+            
+            try {
+                $stmt = $_db->prepare("INSERT INTO voucher (promo_code, discount_price) VALUES (?, ?)");
+                $stmt->execute([$promo_code, $discount_price]);
+                echo "Success"; 
+            } catch (Exception $e) {
+                echo "Error adding voucher: " . $e->getMessage();
+            }
+            exit; 
+        }
+
+        if ($action === 'delete_voucher') {
+            $promo_code = $_POST['promo_code'] ?? '';
+            
+            $stmt = $_db->prepare("DELETE FROM voucher WHERE promo_code = ?");
+            $stmt->execute([$promo_code]);
+            echo "Success";
+            exit;
+        }
+        // ------------------------------------------
+        // 2. 处理 Product (商品)
+        // ------------------------------------------
+        if ($action === 'delete_product') {
+            $id = $_POST['id'] ?? '';
+            
+            $stmt = $_db->prepare("DELETE FROM product WHERE product_id = ?");
+            $stmt->execute([$id]);
+            echo "Success";
+            exit;
+        }
+
+        if ($action === 'create_product') {
+            $name = $_POST['name'];
+            $price = $_POST['price'];
+            $description = $_POST['description'];
+            $release_date = $_POST['release_date'] . " 00:00:00";
+            $stock = $_POST['stock'];
+            $category = $_POST['category'];
+
+            // 处理图片上传 (简易版，假设你已经把图片存到了正确的文件夹)
+            $image_name = 'default.png';
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $image_name = time() . '_' . $_FILES['image']['name'];
+                move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
+            }
+
+            try {
+                $stmt = $_db->prepare("INSERT INTO product (name, price, description, release_date, stock, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name]);
+                echo "Success";
+            } catch (Exception $e) {
+                echo "Database Error: " . $e->getMessage();
+            }
+            exit;
+        }
+
+        if ($action === 'update_product') {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $price = $_POST['price'];
+            $description = $_POST['description'];
+            $release_date = $_POST['release_date'] . " 00:00:00";
+            $stock = $_POST['stock'];
+            $category = $_POST['category'];
+
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $image_name = time() . '_' . $_FILES['image']['name'];
+                move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
+                
+                $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=?, image=? WHERE product_id=?");
+                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name, $id]);
+            } else {
+                // 没有新图片，不更新 image 字段
+                $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=? WHERE product_id=?");
+                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $id]);
+            }
+            
+            echo "Success";
+            exit;
+        }
+    }
+    // ==========================================
+
+    include root('_header.php');
 
     $totalpdtcount = 0;
     $totalpdtcount = getCount($_db, "SELECT COUNT(*) AS total FROM product");
@@ -20,17 +110,17 @@
     $voucherCount = getCount($_db, "SELECT COUNT(*) AS total FROM voucher");
 
     $result = $_db->query("SELECT * FROM product");
-    $product = $result->fetch_all(MYSQLI_ASSOC);
+    $product = $result->fetchAll();
 
     $voucherResult = $_db->query("SELECT promo_code, discount_price FROM voucher");
-    $voucher = $voucherResult->fetch_all(MYSQLI_ASSOC);
+    $voucher = $voucherResult->fetchAll();
 ?>
 <main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <div class="pdt_main">
         <div id="pdtwd">Product Maintaince</div>
-        <div id="pdtwdTwo">Dashboard / Products</div>
+        <div id="pdtwdTwo"><a href="/admin/adminDashboard.php">Dashboard</a>/ Products</div>
         <div class="top">
             <div class="dashboardDisplay">
                 <div class="dashboardTPcontainer">
@@ -84,10 +174,10 @@
                             <tbody>
                                <?php foreach($voucher as $voucherRow): ?>
                                     <tr>
-                                        <td><?= $voucherRow['promo_code'] ?></td>
-                                        <td><?= $voucherRow['discount_price'] ?></td>
+                                        <td><?= $voucherRow->promo_code ?></td>
+                                        <td><?= $voucherRow->discount_price ?></td>
                                         <td>
-                                            <button class="vcdl" data-id="<?= $voucherRow['promo_code'] ?>">Delete</button>
+                                            <button class="vcdl" data-id="<?= $voucherRow->promo_code ?>">Delete</button>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>
@@ -107,8 +197,7 @@
                                         <?= $item['label'] ?>
                                     </label>
                                 
-                                    <input type="text" id="<?= $item['id'] ?>">
-                                <?php endforeach; ?>
+                                    <input type="text" id="<?= $item['id'] ?>" name="<?= $item['id'] ?>"> <?php endforeach; ?>
                             <button type="submit" onclick="addVoucher()">Submit</button>
                         </form>
                     </div>
@@ -148,16 +237,11 @@
                                             <label for="productPrice" id="pdtpcname">Price (RM)</label>
                                             <input type="number" min='0' id="pdtpc" placeholder="0.00">
                                         </div>
-                                        <div>
-                                            <label for="productMemberDiscount" id="pdtdtname">Member Discount (%)</label>
-                                            <input id="pdtdt" type="number" min="0" placeholder="0">
-                                        </div>
-
                                     </div>
                                     <div class="dateStockRow">
                                         <div>
                                             <label for="productReleaseDate">Release Date</label>
-                                            <input id="pdtrd" type="date" max="2029-12-31">
+                                            <input id="pdtrd" type="date" min="<?= date('Y-m-d') ?>" max="2029-12-31">
                                         </div>
                                         <div>
                                             <label for="productStock">Stock</label>
@@ -165,7 +249,6 @@
                                         </div>
                                         
                                     </div>
-            
                                     <label for="productCategory">Category</label>
                                     <input type="text" id="pdtcy" maxlength="50" placeholder="e.g. Limited Edition, Classic, Art Toy">
 
@@ -227,23 +310,23 @@
                 </tr>
                 <?php foreach($product as $row):?>
                 <tr>
-                    <td>#<?=  $row['product_id'] ?></td>
-                    <td><img src="image/<?= $row['image'] ?>" width="50" height="50" style="border-radius:5px; object-fit:cover;"></td>
-                    <td><?= $row['name'] ?></td>
-                    <td><?= $row['category'] ?></td>
-                    <td><?= number_format($row['price'], 2) ?></td>
-                    <td><?= $row['stock'] ?></td>
+                    <td>#<?=  $row->product_id ?></td>
+                    <td><img src="/img/product_Img/<?=$row->image?>" width="50" height="50" style="border-radius:5px; object-fit:cover;"></td>
+                    <td><?= $row->name ?></td>
+                    <td><?= $row->category ?></td>
+                    <td><?= number_format($row->price, 2) ?></td>
+                    <td><?= $row->stock ?></td>
 
                     <td>
                         <button class="pdtet"
-                            data-id="<?= $row['product_id'] ?>"
-                            data-name="<?= $row['name'] ?>"
-                            data-category="<?= $row['category'] ?>"
-                            data-price="<?= $row['price'] ?>"
-                            data-stock="<?= $row['stock'] ?>"
-                            data-description="<?= $row['description'] ?>"
-                            data-date="<?= date('Y-m-d', strtotime($row['release_date'])) ?>">Edit</button>
-                        <button class="pdtdl" data-id="<?= $row['product_id'] ?>">Delete</button>
+                            data-id="<?= $row->product_id ?>"
+                            data-name="<?= $row->name ?>"
+                            data-category="<?= $row->category ?>"
+                            data-price="<?= $row->price ?>"
+                            data-stock="<?= $row->stock ?>"
+                            data-description="<?= $row->description ?>"
+                            data-date="<?= date('Y-m-d', strtotime($row->release_date)) ?>">Edit</button>
+                        <button class="pdtdl" data-id="<?= $row->product_id ?>">Delete</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -269,9 +352,8 @@
         </div>
 
     </div>
-    <script src="adminScript.js"></script>
-    
 </main>
 <?php
-    include 'php/_footer.php';
+    $_jsFileName = 'productMaintenance';
+    include root('_footer.php');
 ?>

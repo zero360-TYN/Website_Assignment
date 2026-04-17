@@ -4,7 +4,7 @@ body {
 
 .pdt_main {
     margin-top: 5px;
-    margin-left: 50px;
+    margin: 10px;
 }
 
 #pdtwd {
@@ -320,7 +320,7 @@ body {
 /*--------Product Table--------*/
 #pdtable {
     margin-top: 10px;
-    width: 95%;
+    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
     border-radius: 10px;
