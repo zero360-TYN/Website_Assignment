@@ -7,7 +7,7 @@ include root('_header.php');
 
 global $_user;
 
-$stmt = $_db->prepare("SELECT * FROM product WHERE release_date > NOW() ORDER BY release_date ASC LIMIT 8");
+$stmt = $_db->prepare("SELECT * FROM product WHERE release_date > NOW() AND stock > 0 AND is_deleted = 0 ORDER BY release_date ASC LIMIT 8");
 $stmt->execute();
 $upcomingProducts = $stmt->fetchAll();
 ?>
