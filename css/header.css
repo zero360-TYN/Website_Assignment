@@ -13,8 +13,7 @@
     border-bottom: 2px solid #ddd;
 }
 .header-right{
-    display: flex;
-    align-items: center;
+    margin-bottom: 15px;
 }
 
 /*===========================================Search==========================================*/
@@ -49,6 +48,7 @@
 .logo {
      height: 35px; 
      width: auto; 
+     margin-bottom: 1px;
 }
 
 .search-icon{ 

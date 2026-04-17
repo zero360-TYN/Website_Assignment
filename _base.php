@@ -338,5 +338,11 @@
 
         return ['success' => false, 'message' => 'Save failed'];
     }
+    
+    function getCount($_db, $sql) {
+        $stmt = $_db->prepare($sql);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc()['total'];
+    }
 
 ?>
