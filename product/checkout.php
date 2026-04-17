@@ -12,8 +12,15 @@ $user_id = $_user->user_id;
 
 //calc total amount
 $total_amount = 0;
-$stm = $_db->prepare("SELECT price FROM product WHERE product_id = ?");
+$stm = $_db->prepare("SELECT price FROM product WHERE product_id = ?" . " AND release_date <= NOW() AND is_deleted = 0");
 foreach ($cart as $id => $qty) {
+    if (!is_exists($id, 'product', 'product_id') || is_deleted($id)) {
+        temp('info', "Product delete from cart! : This product is deleted.");
+        unset($cart[$id]);
+        set_cart($cart);
+        redirect('/');
+        exit();
+    }
     $stm->execute([$id]);
     $p = $stm->fetch();
     if ($p) $total_amount += $p->price * $qty;
@@ -63,7 +70,7 @@ if (is_post() && isset($_POST['action'])) {
 
         //check stock
         $out_of_stock_items = [];
-        $check_stm = $_db->prepare("SELECT name, stock FROM product WHERE product_id = ?");
+        $check_stm = $_db->prepare("SELECT name, stock FROM product WHERE product_id = ? AND release_date <= NOW() AND is_deleted = 0");
         foreach ($cart as $id => $qty) {
             $check_stm->execute([$id]);
             $p = $check_stm->fetch();

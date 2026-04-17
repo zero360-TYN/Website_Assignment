@@ -14,7 +14,7 @@ if (is_post()) {
         $id = req('product_id');
         $qty = req('quantity');
         if($id){
-            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ? AND release_date <= NOW()");
+            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ? AND release_date <= NOW() AND is_deleted = 0");
             $stm->execute([$id]);
             $p = $stm->fetch();
             if($qty > $p->stock){
@@ -30,7 +30,6 @@ if (is_post()) {
     }
     redirect();
 }
-
 $_title = 'My Shopping Cart';
 $_mainCssFileName = 'cart';
 include root('_header.php');
@@ -58,7 +57,7 @@ $cart = get_cart();
 
             <?php
             $grand_total = 0;
-            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ?");
+            $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ? AND release_date <= NOW() AND is_deleted = 0");
 
             foreach ($cart as $product_id => $quantity):
                 $stm->execute([$product_id]);

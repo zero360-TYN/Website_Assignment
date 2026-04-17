@@ -51,7 +51,7 @@
                     <div id="userDropdown" class="dropdown-menu">
                         <a href="/user/login.php">Log In</a>
                         <hr>
-                        <a href="/user/register.php">Register</a>
+                        <a href="/user/login.php">Register</a>
                     </div>
                 <?php else: ?>
                     <img src="/img/user_Icon/<?= $_user->photo ?>" class="icon-user" id="userAvatar">

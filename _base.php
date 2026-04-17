@@ -172,6 +172,16 @@
         $cart = get_cart();
 
         if (is_exists($id, 'product', 'product_id') && $unit >= 1) {
+            if (is_deleted($id)) {
+                temp('info', "Product delete from cart! : This product is deleted.");
+                unset($cart[$id]);
+                set_cart($cart);
+                redirect();
+                exit();
+            }
+             else{
+                temp('info', "Product quantity updated!");
+            }
             $cart[$id] = $unit;
             ksort($cart);
         }
@@ -200,7 +210,9 @@
 
         $ins_stm = $_db->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
         foreach ($cart as $product_id => $quantity) {
-            $ins_stm->execute([$user_id, $product_id, $quantity]);
+            if (is_exists($product_id, 'product', 'product_id') && $quantity >= 1 && !is_deleted($product_id)) {
+                $ins_stm->execute([$user_id, $product_id, $quantity]);
+            }
         }
     }
     //===============================wishlist=============================
@@ -220,7 +232,14 @@
         if (is_in_wishlist($product_id)) {
             $stm = $_db->prepare("DELETE FROM wishlist WHERE user_id = ? AND product_id = ?");
             $stm->execute([$_user->user_id, $product_id]);
-            return "removed";
+            if(is_deleted($product_id)){
+                temp('info', "Product removed from wishlist! : This product is deleted.");
+                redirect();
+                exit();
+            }
+            else{
+                temp('info', "Product removed from wishlist!");
+            }
         } else {
             $stm = $_db->prepare("INSERT INTO wishlist (user_id, product_id) VALUES (?, ?)");
             $stm->execute([$_user->user_id, $product_id]);
@@ -235,7 +254,7 @@
         $stm = $_db->prepare("
             SELECT p.* FROM product p
             JOIN wishlist w ON p.product_id = w.product_id
-            WHERE w.user_id = ?
+            WHERE w.user_id = ? AND p.release_date <= NOW() AND p.is_deleted = 0
             ORDER BY w.added_date DESC
         ");
         $stm->execute([$_user->user_id]);
@@ -343,5 +362,15 @@
     function getCount($db, $sql) {
         return $db->query($sql)->fetchColumn();
     }
+    function is_deleted($product_id) {
+        global $_db;
 
+        $sql = "SELECT is_deleted FROM product WHERE product_id = ?";
+        $stmt = $_db->prepare($sql);
+        $stmt->execute([$product_id]);
+
+        $status = $stmt->fetchColumn();
+
+        return ($status === false || $status == 1);
+    }
 ?>

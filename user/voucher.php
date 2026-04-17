@@ -55,19 +55,33 @@ $stm = $_db->prepare($sql);
 $stm->execute([$user_id]);
 $vouchers = $stm->fetchAll();
 
+$activeVouchers = [];
+$usedVouchers = [];
+
+foreach ($vouchers as $v) {
+    if ($v->is_claimed && $v->is_used) {
+        $usedVouchers[] = $v;
+    } else {
+        $activeVouchers[] = $v;
+    }
+}
+
 $_title = 'Voucher Center';
 $_mainCssFileName = 'voucher';
 include root('_header.php');
 ?>
 <main>
-    <h2 class="voucher-title">🎟️ Voucher Center</h2>
+    <div class="voucher-header">
+        <h2 class="voucher-title">🎟️ Voucher Center</h2>
+        <button id="viewUsedBtn" class="btn-history">History (<?= count($usedVouchers) ?>)</button>
+    </div>
 
-    <?php if (empty($vouchers)): ?>
+    <?php if (empty($activeVouchers)): ?>
         <p style="text-align:center; color:#666;">No active vouchers available right now. Check back later!</p>
     <?php else: ?>
         <div class="voucher-grid">
-            <?php foreach ($vouchers as $v): ?>
-                <div class="voucher-card <?= ($v->is_claimed && $v->is_used) ? 'used' : '' ?>">
+            <?php foreach ($activeVouchers as $v): ?>
+                <div class="voucher-card">
                     <div>
                         <h3 class="v-code"><?= htmlspecialchars($v->promo_code) ?></h3>
                         <p class="v-discount">RM <?= number_format($v->discount_price, 2) ?> OFF</p>
@@ -79,19 +93,42 @@ include root('_header.php');
                             <input type="hidden" name="promo_code" value="<?= htmlspecialchars($v->promo_code) ?>">
                             <button type="submit" class="btn-claim">Claim Now</button>
                         </form>
-                    
                     <?php elseif ($v->is_claimed && !$v->is_used): ?>
                         <a href="/product/shoppingCart.php" class="btn-use">Ready to Use</a>
-                    
-                    <?php elseif ($v->is_claimed && $v->is_used): ?>
-                        <div class="btn-disabled">Already Used</div>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <div id="usedModal" class="modal-overlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-top">
+                <h3>Used Vouchers</h3>
+                <button id="closeModal" class="close-btn">✖</button>
+            </div>
+            <div class="modal-body">
+                <?php if (empty($usedVouchers)): ?>
+                    <p class="empty-msg">You haven't used any vouchers yet.</p>
+                <?php else: ?>
+                    <ul class="used-list">
+                        <?php foreach ($usedVouchers as $u): ?>
+                            <li>
+                                <div class="used-info">
+                                    <span class="u-code"><?= htmlspecialchars($u->promo_code) ?></span>
+                                    <span class="u-price">-RM <?= number_format($u->discount_price, 2) ?></span>
+                                </div>
+                                <span class="u-status">Used</span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 </main>
 
 <?php
+$_jsFileName = 'voucher';
 include root('_footer.php');
 ?>

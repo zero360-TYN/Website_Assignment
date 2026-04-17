@@ -1,119 +1,140 @@
 <?php
-    $_title = 'admin';
-    $_mainCssFileName = "table";
-    require '../_base.php';
-    // 集中处理所有的 POST 请求 (AJAX 提交)
-    if (is_post()) {
-        $action = $_POST['action'] ?? '';
-        // 1. 处理 Voucher (优惠券)
-        if ($action === 'create_voucher') {
-            $promo_code = $_POST['promo_code'] ?? '';
-            $discount_price = $_POST['discount_price'] ?? '';
-            
-            try {
-                $stmt = $_db->prepare("INSERT INTO voucher (promo_code, discount_price) VALUES (?, ?)");
-                $stmt->execute([$promo_code, $discount_price]);
-                echo "Success"; 
-            } catch (Exception $e) {
-                echo "Error adding voucher: " . $e->getMessage();
-            }
-            exit; 
-        }
+$_title = 'Product Maintenance';
+$_mainCssFileName = "table";
+require '../_base.php';
+if (is_post()) {
+    $action = $_POST['action'] ?? '';
+    if ($action === 'create_voucher') {
+        $promo_code = $_POST['promo_code'] ?? '';
+        $discount_price = $_POST['discount_price'] ?? '';
 
-        if ($action === 'delete_voucher') {
-            $promo_code = $_POST['promo_code'] ?? '';
-            
-            $stmt = $_db->prepare("DELETE FROM voucher WHERE promo_code = ?");
-            $stmt->execute([$promo_code]);
+        try {
+            $stmt = $_db->prepare("INSERT INTO voucher (promo_code, discount_price) VALUES (?, ?)");
+            $stmt->execute([$promo_code, $discount_price]);
             echo "Success";
-            exit;
+        } catch (Exception $e) {
+            echo "Error adding voucher: " . $e->getMessage();
         }
-        // ------------------------------------------
-        // 2. 处理 Product (商品)
-        // ------------------------------------------
-        if ($action === 'delete_product') {
-            $id = $_POST['id'] ?? '';
-            
-            $stmt = $_db->prepare("DELETE FROM product WHERE product_id = ?");
-            $stmt->execute([$id]);
-            echo "Success";
-            exit;
-        }
-
-        if ($action === 'create_product') {
-            $name = $_POST['name'];
-            $price = $_POST['price'];
-            $description = $_POST['description'];
-            $release_date = $_POST['release_date'] . " 00:00:00";
-            $stock = $_POST['stock'];
-            $category = $_POST['category'];
-
-            // 处理图片上传 (简易版，假设你已经把图片存到了正确的文件夹)
-            $image_name = 'default.png';
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $image_name = time() . '_' . $_FILES['image']['name'];
-                move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
-            }
-
-            try {
-                $stmt = $_db->prepare("INSERT INTO product (name, price, description, release_date, stock, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name]);
-                echo "Success";
-            } catch (Exception $e) {
-                echo "Database Error: " . $e->getMessage();
-            }
-            exit;
-        }
-
-        if ($action === 'update_product') {
-            $id = $_POST['id'];
-            $name = $_POST['name'];
-            $price = $_POST['price'];
-            $description = $_POST['description'];
-            $release_date = $_POST['release_date'] . " 00:00:00";
-            $stock = $_POST['stock'];
-            $category = $_POST['category'];
-
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $image_name = time() . '_' . $_FILES['image']['name'];
-                move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
-                
-                $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=?, image=? WHERE product_id=?");
-                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name, $id]);
-            } else {
-                // 没有新图片，不更新 image 字段
-                $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=? WHERE product_id=?");
-                $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $id]);
-            }
-            
-            echo "Success";
-            exit;
-        }
+        exit;
     }
-    // ==========================================
+    if ($action === 'toggle_voucher') {
+        $promo_code = trim($_POST['promo_code'] ?? '');
+        $status = (int)($_POST['status'] ?? 0);
+        try {
+            $stmt = $_db->prepare("UPDATE voucher SET is_active = ? WHERE promo_code = ?");
+            $stmt->execute([$status, $promo_code]);
+            echo "Success";
+        } catch (Exception $e) {
+            echo "Database Error: " . $e->getMessage();
+        }
+        exit;
+    }
+    if ($action === 'delete_voucher') {
+        $promo_code = trim($_POST['promo_code'] ?? '');
 
-    include root('_header.php');
+        if (empty($promo_code)) {
+            echo "Error: Promo code is empty.";
+            exit;
+        }
 
-    $totalpdtcount = 0;
-    $totalpdtcount = getCount($_db, "SELECT COUNT(*) AS total FROM product");
+        try {
+            $_db->beginTransaction();
+            $stmt1 = $_db->prepare("DELETE FROM voucher_handle WHERE promo_code = ?");
+            $stmt1->execute([$promo_code]);
 
-    $instockcount = 0;
-    $instockcount = getCount($_db, "SELECT COUNT(*) as total FROM product WHERE stock > 30 ");
+            $stmt2 = $_db->prepare("DELETE FROM voucher WHERE promo_code = ?");
+            $stmt2->execute([$promo_code]);
 
-    $lowstockcount = 0;
-    $lowstockcount = getCount($_db, "SELECT COUNT(*) AS total FROM product WHERE stock < 30");
+            $_db->commit();
 
-    $categorycount = 0;
-    $categorycount = getCount($_db, "SELECT COUNT(DISTINCT category) AS total FROM product");
+            echo "Success";
+        } catch (Exception $e) {
+            $_db->rollBack();
+            echo "Database Error: " . $e->getMessage();
+        }
+        exit;
+    }
+    if ($action === 'delete_product') {
+        $id = $_POST['id'] ?? '';
 
-    $voucherCount = 0;
-    $voucherCount = getCount($_db, "SELECT COUNT(*) AS total FROM voucher");
+        $stmt = $_db->prepare("UPDATE product SET is_deleted = '1' WHERE product_id = ?");
+        $stmt->execute([$id]);
+        echo "Success";
+        exit;
+    }
 
-    $result = $_db->query("SELECT * FROM product");
-    $product = $result->fetchAll();
+    if ($action === 'create_product') {
+        $name = $_POST['name'];
+        $price = $_POST['price'];
+        $description = $_POST['description'];
+        $release_date = $_POST['release_date'] . " 00:00:00";
+        $stock = $_POST['stock'];
+        $category = $_POST['category'];
 
-    $voucherResult = $_db->query("SELECT promo_code, discount_price FROM voucher");
-    $voucher = $voucherResult->fetchAll();
+        $image_name = 'default.png';
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $image_name = time() . '_' . $_FILES['image']['name'];
+            move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
+        }
+
+        try {
+            $stmt = $_db->prepare("INSERT INTO product (name, price, description, release_date, stock, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name]);
+            echo "Success";
+        } catch (Exception $e) {
+            echo "Database Error: " . $e->getMessage();
+        }
+        exit;
+    }
+
+    if ($action === 'update_product') {
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $price = $_POST['price'];
+        $description = $_POST['description'];
+        $release_date = $_POST['release_date'] . " 00:00:00";
+        $stock = $_POST['stock'];
+        $category = $_POST['category'];
+
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $image_name = time() . '_' . $_FILES['image']['name'];
+            move_uploaded_file($_FILES['image']['tmp_name'], "../img/product_Img/" . $image_name);
+
+            $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=?, image=? WHERE product_id=?");
+            $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $image_name, $id]);
+        } else {
+            $stmt = $_db->prepare("UPDATE product SET name=?, price=?, description=?, release_date=?, stock=?, category=? WHERE product_id=?");
+            $stmt->execute([$name, $price, $description, $release_date, $stock, $category, $id]);
+        }
+
+        echo "Success";
+        exit;
+    }
+}
+// ==========================================
+
+include root('_header.php');
+
+$totalpdtcount = 0;
+$totalpdtcount = getCount($_db, "SELECT COUNT(*) AS total FROM product WHERE is_deleted = 0");
+
+$instockcount = 0;
+$instockcount = getCount($_db, "SELECT COUNT(*) as total FROM product WHERE stock > 30 AND is_deleted = 0");
+
+$lowstockcount = 0;
+$lowstockcount = getCount($_db, "SELECT COUNT(*) AS total FROM product WHERE stock < 30 AND is_deleted = 0");
+
+$categorycount = 0;
+$categorycount = getCount($_db, "SELECT COUNT(DISTINCT category) AS total FROM product WHERE is_deleted = 0");
+
+$voucherCount = 0;
+$voucherCount = getCount($_db, "SELECT COUNT(*) AS total FROM voucher");
+
+$result = $_db->query("SELECT * FROM product WHERE is_deleted = 0");
+$product = $result->fetchAll();
+
+$voucherResult = $_db->query("SELECT * FROM voucher");
+$voucher = $voucherResult->fetchAll();
 ?>
 <main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -154,51 +175,55 @@
             <div class="addVoucher">
                 <div class="voucher_container">
                     <div class="vouchertop">
-                        <label id="voucherwd">Voucher Information</label>
-                        <div id="vcaddCancel">✖</div>
+                        <h2 id="voucherwd">Voucher Management</h2>
+                        <button id="vcaddCancel" class="close-btn">✖</button>
                     </div>
                     <div class="voucher_row">
-                        <table class="vouchertable">
-                            <thead>
-                                <tr>
-                                    <?php
-                                        $voucherHeader = ["Promo Code", "Discount Price", "Action"];
-
-                                        foreach($voucherHeader as $header) {
-                                            echo "<th>$header</th>";
-                                        }
-                                    ?>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                               <?php foreach($voucher as $voucherRow): ?>
+                        <div class="vouchertable_wrapper">
+                            <table class="vouchertable">
+                                <thead>
                                     <tr>
-                                        <td><?= $voucherRow->promo_code ?></td>
-                                        <td><?= $voucherRow->discount_price ?></td>
-                                        <td>
-                                            <button class="vcdl" data-id="<?= $voucherRow->promo_code ?>">Delete</button>
-                                        </td>
+                                        <th>Promo Code</th>
+                                        <th>Discount Price</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
-                                <?php endforeach ?>
-                            </tbody>
-                        </table>
-
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($voucher as $voucherRow): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($voucherRow->promo_code) ?></td>
+                                            <td>RM <?= htmlspecialchars($voucherRow->discount_price) ?></td>
+                                            <td>
+                                                <label class="vc-switch">
+                                                    <input type="checkbox" class="toggle-status"
+                                                        data-id="<?= htmlspecialchars($voucherRow->promo_code) ?>"
+                                                        <?= isset($voucherRow->is_active) && $voucherRow->is_active ? 'checked' : '' ?>>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <button class="vcdl" data-id="<?= htmlspecialchars($voucherRow->promo_code) ?>">Delete</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach ?>
+                                </tbody>
+                            </table>
+                        </div>
                         <form class="voucherinput" onsubmit="addVoucher(event)">
+                            <h3 class="form-title">Add New Voucher</h3>
                             <input type="hidden" name="action" value="create">
-                            <?php 
-                                $voucherinput = [
-                                    ["id" => "promo_code", "label" => "Promo Code"],
-                                    ["id" => "discount_price", "label" => "Discount Price"]
-                                ];
-                                ?>
-                                <?php foreach ($voucherinput as $item): ?>
-                                    <label>
-                                        <?= $item['label'] ?>
-                                    </label>
-                                
-                                    <input type="text" id="<?= $item['id'] ?>" name="<?= $item['id'] ?>"> <?php endforeach; ?>
-                            <button type="submit" onclick="addVoucher()">Submit</button>
+
+                            <div class="input-group">
+                                <label for="promo_code">Promo Code</label>
+                                <input type="text" id="promo_code" name="promo_code" placeholder="e.g. SUMMER26" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="discount_price">Discount Price (RM)</label>
+                                <input type="number" step="0.01" id="discount_price" name="discount_price" placeholder="e.g. 15.00" required>
+                            </div>
+                            <button type="submit" class="btn-submit">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -247,7 +272,7 @@
                                             <label for="productStock">Stock</label>
                                             <input type="number" id="pdtsk" min="0" max="9999" placeholder="Product Stock">
                                         </div>
-                                        
+
                                     </div>
                                     <label for="productCategory">Category</label>
                                     <input type="text" id="pdtcy" maxlength="50" placeholder="e.g. Limited Edition, Classic, Art Toy">
@@ -258,11 +283,11 @@
                                     <div class="detailRow">
                                         <div id="detailImage"></div>
                                         <div class="detailInfo">
-                                            <?php 
+                                            <?php
                                             $details = ["detailName", "detailPrice", "detailStock"];
 
-                                            foreach($details as $detail) {
-                                                echo '<label id="'.$detail.'"></label>';
+                                            foreach ($details as $detail) {
+                                                echo '<label id="' . $detail . '"></label>';
                                             }
                                             ?>
                                             <hr>
@@ -289,7 +314,7 @@
                                     </div>
 
                                 </form>
-                                    <button type="button" onclick="addData()" id="pdtadd">Submit →</button>
+                                <button type="button" onclick="addData()" id="pdtadd">Submit →</button>
                             </div>
                         </div>
                     </div>
@@ -300,49 +325,49 @@
         <div class="container">
             <table id="pdtable">
                 <tr>
-                <?php
-                $header = ["ID", "Photo", "Product Name", "Category", "Price (RM)", "Stock", "Action"];
-                
-                foreach ($header as $head) {
-                    echo "<th>$head</th>";
-                }
-                ?>
-                </tr>
-                <?php foreach($product as $row):?>
-                <tr>
-                    <td>#<?=  $row->product_id ?></td>
-                    <td><img src="/img/product_Img/<?=$row->image?>" width="50" height="50" style="border-radius:5px; object-fit:cover;"></td>
-                    <td><?= $row->name ?></td>
-                    <td><?= $row->category ?></td>
-                    <td><?= number_format($row->price, 2) ?></td>
-                    <td><?= $row->stock ?></td>
+                    <?php
+                    $header = ["ID", "Photo", "Product Name", "Category", "Price (RM)", "Stock", "Action"];
 
-                    <td>
-                        <button class="pdtet"
-                            data-id="<?= $row->product_id ?>"
-                            data-name="<?= $row->name ?>"
-                            data-category="<?= $row->category ?>"
-                            data-price="<?= $row->price ?>"
-                            data-stock="<?= $row->stock ?>"
-                            data-description="<?= $row->description ?>"
-                            data-date="<?= date('Y-m-d', strtotime($row->release_date)) ?>">Edit</button>
-                        <button class="pdtdl" data-id="<?= $row->product_id ?>">Delete</button>
-                    </td>
+                    foreach ($header as $head) {
+                        echo "<th>$head</th>";
+                    }
+                    ?>
                 </tr>
+                <?php foreach ($product as $row): ?>
+                    <tr>
+                        <td>#<?= $row->product_id ?></td>
+                        <td><img src="/img/product_Img/<?= $row->image ?>" width="50" height="50" style="border-radius:5px; object-fit:cover;"></td>
+                        <td><?= $row->name ?></td>
+                        <td><?= $row->category ?></td>
+                        <td><?= number_format($row->price, 2) ?></td>
+                        <td><?= $row->stock ?></td>
+
+                        <td>
+                            <button class="pdtet"
+                                data-id="<?= $row->product_id ?>"
+                                data-name="<?= $row->name ?>"
+                                data-category="<?= $row->category ?>"
+                                data-price="<?= $row->price ?>"
+                                data-stock="<?= $row->stock ?>"
+                                data-description="<?= $row->description ?>"
+                                data-date="<?= date('Y-m-d', strtotime($row->release_date)) ?>">Edit</button>
+                            <button class="pdtdl" data-id="<?= $row->product_id ?>">Delete</button>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </table>
         </div>
     </div>
     <div id="deleterow" class="row">
-            <div class="row_container">
-                <div id="dltwd">Are you sure you want to delete this product?</div>
-                <div class="dtlbtn">
-                    <button id="yesdelete">Delete</button>
-                    <button id="canceldelete">Cancel</button>
-                </div>
+        <div class="row_container">
+            <div id="dltwd">Are you sure you want to delete this?</div>
+            <div class="dtlbtn">
+                <button id="yesdelete">Delete</button>
+                <button id="canceldelete">Cancel</button>
             </div>
         </div>
-        
+    </div>
+
     <div id="errorrow" class="error">
         <div class="error_container">
             <div id="error_dly"></div>
@@ -354,6 +379,6 @@
     </div>
 </main>
 <?php
-    $_jsFileName = 'productMaintenance';
-    include root('_footer.php');
+$_jsFileName = 'productMaintenance';
+include root('_footer.php');
 ?>

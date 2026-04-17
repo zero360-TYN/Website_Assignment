@@ -177,15 +177,15 @@ $(document).on("click", ".pdtet", function() {
     $('.productLbl').show();
 });
 
-// ==========================================
-// 5. Voucher 管理
-// ==========================================
+//vouchers
 $(".dashboardVcontainer").on("click", function() {
     $(".addVoucher").css("display", "flex");
+    $("body").css("overflow", "hidden");
 });
 
 $("#vcaddCancel").on("click", function() {
     $(".addVoucher").hide();
+    $("body").css("overflow", "auto");
 });
 
 function addVoucher(e){
@@ -211,10 +211,7 @@ function addVoucher(e){
     .catch(err => alert("Network Error: " + err));
 }
 
-// ==========================================
-// 6. 统一的 Delete 逻辑 (核心修复防重复提交)
-// ==========================================
-let deleteMode = null; // 'product' 或 'voucher'
+let deleteMode = null; // 'product' or 'voucher'
 let targetId = null;
 
 // 点击产品删除按钮
@@ -224,21 +221,18 @@ $(document).on("click", ".pdtdl", function() {
     $("#deleterow").css("display", "flex");
 });
 
-// 点击 Voucher 删除按钮
 $(document).on("click", ".vcdl", function() {
     deleteMode = "voucher";
     targetId = $(this).data("id");
     $("#deleterow").css("display", "flex");
 });
 
-// 取消删除
 $("#canceldelete").click(function() {
     $("#deleterow").hide();
     deleteMode = null;
     targetId = null;
 });
 
-// 唯一的确认删除按钮
 $("#yesdelete").off("click").on("click", function() {
     if (deleteMode === "product") {
         $.post(window.location.href, { action: "delete_product", id: targetId }, function(res) {
@@ -250,4 +244,30 @@ $("#yesdelete").off("click").on("click", function() {
         });
     }
     $("#deleterow").hide();
+});
+
+$(document).on("change", ".toggle-status", function() {
+    let promoCode = $(this).attr("data-id");
+    let isActive = $(this).is(":checked") ? 1 : 0;
+    let toggleBtn = $(this);
+
+    $.ajax({
+        url: window.location.href,
+        type: "POST",
+        data: {
+            action: "toggle_voucher",
+            promo_code: promoCode,
+            status: isActive
+        },
+        success: function(res) {
+            if (!res.includes("Success")) {
+                alert("Status Update Failed:\n" + res);
+                toggleBtn.prop('checked', !isActive); 
+            }
+        },
+        error: function() {
+            alert("Network error.");
+            toggleBtn.prop('checked', !isActive);
+        }
+    });
 });

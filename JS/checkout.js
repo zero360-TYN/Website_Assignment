@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. 表单格式化逻辑 ---
     const cardName = document.getElementById('cardName');
     const cardInput = document.getElementById('cardNumber');
     const expDate = document.getElementById('expriy_date');
@@ -44,26 +43,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. 优惠券弹窗 (Modal) 逻辑 ---
     const voucherModal = document.getElementById('voucherModal');
     const openBtn = document.getElementById('openVoucherBtn');
     const closeBtn = document.getElementById('closeVoucherBtn');
 
-    // 绑定：点击按钮打开
     if (openBtn && voucherModal) {
         openBtn.addEventListener('click', function() {
             voucherModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
         });
     }
 
-    // 绑定：点击 X 关闭
     if (closeBtn && voucherModal) {
         closeBtn.addEventListener('click', function() {
             voucherModal.style.display = 'none';
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
         });
     }
-
-    // 绑定：点击弹窗外部黑色背景关闭
     window.addEventListener('click', function(event) {
         if (event.target === voucherModal) {
             voucherModal.style.display = "none";

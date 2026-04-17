@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     const buyButtons = document.querySelectorAll('.btn-buy');
     const cancelBtn = document.getElementById('btn-cancel');
