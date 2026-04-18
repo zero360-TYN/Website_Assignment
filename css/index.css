@@ -1,8 +1,3 @@
-/* =========================================
-   极致潮玩风 2.0：白底波点墙 + 巨型盲盒海报 + 硬核黑框
-   ========================================= */
-
-/* 1. 大背景：与白色 Header 完美融合的浅灰色波点 */
 main {
     display: flex;
     flex-direction: column;
@@ -17,7 +12,6 @@ main {
     background-size: 30px 30px;
 }
 
-/* 2. 海报框：把原本突兀的红背景变成一个巨大的立体包装盒 */
 .hero-content {
     background-color: #E62A2A; 
     width: 100%;
@@ -27,11 +21,8 @@ main {
     box-shadow: 12px 12px 0px #000; 
     border-radius: 16px; 
     
-    /* 👇 核心修复：防止宽度溢出屏幕 */
     box-sizing: border-box; 
-    /* 👇 视觉补偿：由于阴影向右偏 12px，我们让盒子向左移 6px 来达到视觉绝对居中 */
     transform: translateX(-6px); 
-    /* 👇 保证绝对水平居中，底部留 60px 空隙 */
     margin: 0 auto 60px auto; 
 }
 
@@ -46,7 +37,7 @@ main {
     margin: 0 0 15px 0;
     font-weight: 900;
     text-transform: uppercase; 
-    -webkit-text-stroke: 2px #000; /* 白字黑边 */
+    -webkit-text-stroke: 2px #000;
     text-shadow: 4px 4px 0px #000;
 }
 
@@ -63,7 +54,6 @@ main {
     margin-bottom: 20px;
 }
 
-/* 3. 核心按钮：波普块风格 */
 .btn-primary {
     display: inline-block;
     padding: 15px 40px;
@@ -79,7 +69,7 @@ main {
 }
 
 .btn-primary:hover {
-    transform: translate(4px, 4px); /* 按压效果 */
+    transform: translate(4px, 4px);
     box-shadow: 2px 2px 0px #000; 
 }
 .auth-section {
@@ -111,7 +101,6 @@ main {
     flex-wrap: wrap;
 }
 
-/* 统一副按钮风格为潮玩风 */
 .btn-secondary {
     display: inline-block;
     padding: 10px 25px;
@@ -150,10 +139,6 @@ main {
     box-shadow: 2px 2px 0px #000;
 }
 
-/* =========================================
-   Coming Soon (即将发售区) 潮玩统一化
-   ========================================= */
-
 .upcoming-section {
     max-width: 1200px;
     width: 100%;
@@ -177,7 +162,6 @@ main {
     gap: 30px;
 }
 
-/* 盲盒卡片也加上黑边和硬阴影 */
 .upcoming-card {
     background-color: #fff;
     border-radius: 12px;
@@ -197,7 +181,7 @@ main {
     width: 100%;
     height: 260px; 
     background-color: #ffffff;
-    border-bottom: 4px solid #000; /* 把图片和文字用黑线隔开 */
+    border-bottom: 4px solid #000;
 }
 
 .img-wrapper img {
@@ -208,7 +192,6 @@ main {
     box-sizing: border-box;
 }
 
-/* 日期徽章 */
 .date-badge {
     position: absolute;
     top: 15px;

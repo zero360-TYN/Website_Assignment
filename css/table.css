@@ -36,6 +36,7 @@ body {
     position: fixed;
     justify-content: center;
     align-items: center;
+    z-index: 200;
 }
 
 .productadd {
@@ -373,87 +374,162 @@ body {
 
 #deleterow {
     display: none;
-    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
     top: 0;
     left: 0;
-    position: fixed;  
     width: 100%;
     height: 100%;
+    background-color: rgba(15, 23, 42, 0.4); 
+    backdrop-filter: blur(8px);
+    z-index: 9999;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
 }
 
 .row_container {
-    width: 320px;
-    height: 140px;
-    background-color: white;
+    width: 90%;
+    max-width: 360px; 
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px 25px 25px; 
+    
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#dltwd {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 25px 0;
+    line-height: 1.5;
 }
 
 .dtlbtn {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     width: 100%;
     justify-content: center;
 }
 
-#dltwd {
-    padding: 25px;
+#yesdelete, #canceldelete {
+    flex: 1; 
+    padding: 12px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#yesdelete , #canceldelete{
-    color: white;
-    background-color: black;
-    border: none;
-    width: 130px;
-    height: 35px;
+#canceldelete {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+#canceldelete:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
 }
 
 #yesdelete {
-    background-color: rgb(173, 3, 3);
+    background-color: #ef4444; 
+    color: #ffffff;
+}
+
+#yesdelete:hover {
+    background-color: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+#yesdelete:active, #canceldelete:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
 }
 
 #errorrow {
-    display: none;
-    background-color: rgba(0, 0, 0, 0.4);
+    display: none; 
+    position: fixed;
     top: 0;
     left: 0;
-    position: fixed;  
     width: 100%;
     height: 100%;
+    background-color: rgba(15, 23, 42, 0.4); 
+    backdrop-filter: blur(8px); 
+    z-index: 9999;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
 }
 
 .error_container {
-    width: 300px;
-    height: 140px;
-    background-color: white;
-    z-index: 9999;
+    width: 90%;
+    max-width: 320px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0; 
+    border-radius: 16px;
+    padding: 30px 25px 25px;
+    
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#error_dly {
+    font-size: 1.05rem;
+    font-weight: 600; 
+    color: #334155;
+    margin: 0 0 25px 0;
+    line-height: 1.6;
+    word-wrap: break-word;
+    width: 100%;
 }
 
 .errorbtn {
     display: flex;
     width: 100%;
-    margin-top: 30px;
     justify-content: center;
 }
 
-#error_dly {
-    display: flex;
-    left: 50%;
-    margin-top: 12%;
-    justify-content: center;
-    font-size: 16px;
-}
-
-#okError{
-    color: white;
-    background-color: black;
+#okError {
+    background-color: #ef4444; 
+    color: #fff;
     border: none;
-    width: 120px;
-    height: 35px;
+    width: 100%;
+    padding: 12px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#okError:hover {
+    background-color: #dc2626; 
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); 
+    transform: translateY(-1px);
+}
+
+#okError:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
+}
+
+@keyframes modalPop {
+    0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /*----------Product Details---------*/
@@ -471,7 +547,7 @@ body {
 }
 
 #detailImage img {
-    flex-shrink: 0; /* 防止图片被压缩 */
+    flex-shrink: 0;
 }
 .detailTitle {
     font-weight: bold;
@@ -526,11 +602,6 @@ body {
     justify-content: space-between;
 }
 /*----------END---------*/
-/* =========================================
-   Voucher Popup (优惠券弹窗)
-   ========================================= */
-
-/* 1. 黑色半透明背景遮罩 */
 .addVoucher {
     position: fixed;
     top: 0;
@@ -538,19 +609,19 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px); /* 现代毛玻璃效果 */
-    display: none; /* 由 JS 控制显示: flex */
+    backdrop-filter: blur(4px);
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 2000;
 }
 
-/* 2. 弹窗白底容器 */
+
 .voucher_container {
     background: #ffffff;
     width: 90%;
-    max-width: 850px; /* 稍微加宽，给两边足够空间 */
-    max-height: 85vh; /* 💡 关键：弹窗最大高度为屏幕的 85%，绝不超出屏幕 */
+    max-width: 850px; 
+    max-height: 85vh; 
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
@@ -560,7 +631,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 3. 顶部标题栏 */
+
 .vouchertop {
     display: flex;
     justify-content: space-between;
@@ -586,7 +657,7 @@ body {
 }
 
 .close-btn:hover {
-    color: #E62A2A; /* 悬停变红 */
+    color: #E62A2A; 
     transform: scale(1.1);
 }
 
@@ -598,12 +669,9 @@ body {
     min-height: 0;
 }
 
-/* =========================================
-   左侧：表格区
-   ========================================= */
 .vouchertable_wrapper {
-    flex: 1.5; /* 占据约 60% 宽度 */
-    overflow-y: auto; /* 💡 关键：内容过多时自动出现垂直滚动条 */
+    flex: 1.5; 
+    overflow-y: auto; 
     border: 1px solid #ddd;
     border-radius: 8px;
 }
@@ -614,7 +682,6 @@ body {
     text-align: left;
 }
 
-/* 冻结表头（滚动时表头不下沉） */
 .vouchertable th {
     position: sticky;
     top: 0;
@@ -651,11 +718,8 @@ body {
     background-color: #c82333;
 }
 
-/* =========================================
-   右侧：表单区
-   ========================================= */
 .voucherinput {
-    flex: 1; /* 占据约 40% 宽度 */
+    flex: 1; 
     background: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
@@ -663,7 +727,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    height: fit-content; /* 表单不需要跟着表格拉长，保持紧凑 */
+    height: fit-content;
 }
 
 .form-title {

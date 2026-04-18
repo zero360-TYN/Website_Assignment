@@ -184,16 +184,15 @@ main{
     color: #fff;
 }
 
-/* --- 优惠券弹窗 (Modal) 样式 --- */
 .modal {
-    display: none; /* 默认隐藏 */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5); /* 半透明黑底 */
+    background-color: rgba(0,0,0,0.5);
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(2px);
@@ -242,7 +241,7 @@ main{
 .modal-body {
     padding: 20px;
     max-height: 400px;
-    overflow-y: auto; /* 券太多可以滚动 */
+    overflow-y: auto;
 }
 
 .voucher-list {

@@ -5,7 +5,6 @@ $error = '';
 $success = '';
 $show_form = 'step1';
 
-// 处理发送验证码
 if (isset($_POST['send_code'])) {
     $email = trim($_POST['email']);
     
@@ -47,7 +46,6 @@ if (isset($_POST['send_code'])) {
     }
 }
 
-// 处理重置密码
 if (isset($_POST['reset_password'])) {
     $email = trim($_POST['email']);
     $code = trim($_POST['code']);

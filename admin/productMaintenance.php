@@ -7,6 +7,12 @@ if (is_post()) {
     if ($action === 'create_voucher') {
         $promo_code = $_POST['promo_code'] ?? '';
         $discount_price = $_POST['discount_price'] ?? '';
+        $discount_price = (float)$discount_price;
+        if ($discount_price <= 0) {
+            temp('info', "Invalid discount price.");
+            redirect();
+            exit;
+        }
         try {
             $stmt = $_db->prepare("INSERT INTO voucher (promo_code, discount_price) VALUES (?, ?)");
             $stmt->execute([$promo_code, $discount_price]);
@@ -67,6 +73,7 @@ if (is_post()) {
         $price = $_POST['price'];
         $description = $_POST['description'];
         $release_date = $_POST['release_date'] . " 00:00:00";
+
         $stock = $_POST['stock'];
         $category = $_POST['category'];
 
@@ -247,11 +254,11 @@ $voucher = $voucherResult->fetchAll();
                                     <input type="name" maxlength="100" placeholder="e.g. Pokemon Card Box" id="pdtnme">
 
                                     <label for="productImage">Add Image</label>
-                                    <label class="uploadArea" for="uploadImg">
+                                    <label class="uploadArea" for="uploadImg" id="uploadImgLabel">
                                         Click or Drag to upload product image
                                     </label>
-                                    <input type="file" accept="image/*" id="uploadImg">
-
+                                    <input type="file" accept="/img/product_img/*" id="uploadImg">
+                                    <input type="hidden" id="current_image_name" value="">
                                     <label for="productDescription">Description</label>
                                     <textarea id="pdtdc" placeholder="Short description of this product..." maxlength="200"></textarea>
                                 </form>
@@ -265,7 +272,7 @@ $voucher = $voucherResult->fetchAll();
                                     <div class="dateStockRow">
                                         <div>
                                             <label for="productReleaseDate">Release Date</label>
-                                            <input id="pdtrd" type="date" min="<?= date('Y-m-d') ?>" max="2029-12-31">
+                                            <input id="pdtrd" type="date" min="<?= date('Y-m-d') ?>" max="2029-12-31" placeholder="YYYY-MM-DD">
                                         </div>
                                         <div>
                                             <label for="productStock">Stock</label>
@@ -283,7 +290,7 @@ $voucher = $voucherResult->fetchAll();
                                         <div id="detailImage"></div>
                                         <div class="detailInfo">
                                             <?php
-                                            $details = ["detailName", "detailPrice", "detailStock"];
+                                            $details = ["detailName", "detailStock"];
 
                                             foreach ($details as $detail) {
                                                 echo '<label id="' . $detail . '"></label>';
@@ -293,10 +300,6 @@ $voucher = $voucherResult->fetchAll();
                                             <div>
                                                 <label class="detailTitle">Category</label>
                                                 <label id="detailCategory">-</label>
-                                            </div>
-                                            <div>
-                                                <label class="detailTitle">Discount</label>
-                                                <label id="detailDiscount">-</label>
                                             </div>
                                             <hr>
                                             <div>
@@ -345,6 +348,7 @@ $voucher = $voucherResult->fetchAll();
                             <button class="pdtet"
                                 data-id="<?= $row->product_id ?>"
                                 data-name="<?= $row->name ?>"
+                                data-photo = "<?= $row->image ?>"
                                 data-category="<?= $row->category ?>"
                                 data-price="<?= $row->price ?>"
                                 data-stock="<?= $row->stock ?>"

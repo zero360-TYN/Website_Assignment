@@ -14,3 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function isnumber(value) {
+    return !isNaN(value) && value.trim() !== '';
+}

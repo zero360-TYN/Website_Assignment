@@ -2,7 +2,6 @@
 require_once '../_base.php';
 auth('Admin');
 
-// 处理封锁用户
 if (isset($_POST['block_user'])) {
     $user_id = $_POST['user_id'];
     $block_reason = trim($_POST['block_reason']);
@@ -28,7 +27,6 @@ if (isset($_POST['unblock_user'])) {
     $success = "User has been unblocked.";
 }
 
-// 处理角色变更
 if (isset($_POST['change_role'])) {
     $user_id = $_POST['user_id'];
     $new_role = $_POST['new_role'];
@@ -52,7 +50,6 @@ if (isset($_POST['change_role'])) {
     redirect(); 
     exit;
 }
-// 获取搜索词
 $search = trim($_GET['search'] ?? '');
 
 if ($search !== '') {

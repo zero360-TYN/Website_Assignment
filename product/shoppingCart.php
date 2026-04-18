@@ -13,6 +13,12 @@ if (is_post()) {
     if ($action == 'update') {
         $id = req('product_id');
         $qty = req('quantity');
+        $qty = (int)$qty;
+        if($qty < 1){
+            temp('info', "invalid quantity.");
+            redirect();
+            exit();
+        }
         if($id){
             $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ? AND release_date <= NOW() AND is_deleted = 0");
             $stm->execute([$id]);

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const popupId = document.getElementById('popup-id');
     const popup = document.getElementById('qtyPopup');
     const closeBtn = document.getElementById('closePopup');
-
+    
     if (!popup) return; 
 
     document.querySelectorAll('.btn-update-popup').forEach(btn => {

@@ -1,7 +1,4 @@
-// ========== Profile Page JS ==========
-
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== 用户下拉菜单 ==========
 const userBtn = document.getElementById('userbtn');
 const userMenu = document.getElementById('usermenu');
 
@@ -16,7 +13,6 @@ const userMenu = document.getElementById('usermenu');
         });
     }
 
-    // ========== 头像上传预览 ==========
 const uploadBtn = document.getElementById('uploadBtn');
 const profilePhotoInput = document.getElementById('profilePhotoInput');
 const profilePicForm = document.getElementById('profilePicForm');
@@ -31,7 +27,6 @@ if (profilePhotoInput) {
     profilePhotoInput.onchange = function(e) {
         const file = e.target.files[0];
         if (file) {
-            // 预览图片
             const reader = new FileReader();
             reader.onload = function(event) {
                 const profileImage = document.getElementById('profileImage');
@@ -40,8 +35,7 @@ if (profilePhotoInput) {
                 }
             };
             reader.readAsDataURL(file);
-            
-            // 提交表单
+
             if (profilePicForm) {
                 profilePicForm.submit();
             }
@@ -49,21 +43,18 @@ if (profilePhotoInput) {
     };
 }
 
-    // ========== Tab 按钮事件 ==========
 document.querySelectorAll('.tab-btn').forEach(function(btn) {
     btn.onclick = function() {
         showTab(this.getAttribute('data-tab'));
     };
 });
 
-    // ========== 关闭按钮 ==========
 const closeModalBtn = document.getElementById('closeProfileModal');
     if (closeModalBtn) {
         closeModalBtn.onclick = closeProfileModal;
     }
 });
 
-// ========== 个人资料弹窗 ==========
 function openProfileModal() {
     const modal = document.getElementById('profileModal');
     if (modal) modal.style.display = 'flex';
@@ -74,7 +65,6 @@ function closeProfileModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// ========== Tab 切换 ==========
 function showTab(tabName) {
     const infoTab = document.getElementById('infoTab');
     const passwordTab = document.getElementById('passwordTab');
@@ -94,7 +84,6 @@ function showTab(tabName) {
     }
 }
 
-// ========== 点击模态框外部关闭 ==========
 window.onclick = function(e) {
     const modal = document.getElementById('profileModal');
     if (e.target === modal) {

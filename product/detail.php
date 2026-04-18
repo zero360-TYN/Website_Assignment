@@ -17,6 +17,12 @@ if (is_post()) {
     if ($action == 'add') {
         
         $qty = req('quantity');
+        $qty = (int)$qty;
+        if($qty < 1){
+            temp('info', "invalid quantity.");
+            redirect();
+            exit();
+        }
         $total_qty = $qty + get_quantity_from($p->product_id);
         if ($total_qty > $p->stock) {
             temp('info', "Failed: Only {$p->stock} items left in stock.");

@@ -15,43 +15,57 @@ if (is_post() && isset($_POST['login_submit'])) {
         $block_reason = $user->block_reason ?? 'No reason provided';
         $error = "Your account has been blocked. Reason: " . $block_reason;
     }
-    elseif ($user && $user->locked_until && strtotime($user->locked_until) > time()) {
-        $remaining = strtotime($user->locked_until) - time();
-        $error = "Too many failed attempts. Please try again in " . $remaining . " seconds.";
-    }
-    elseif ($user && $user->password === $password) {
-
-        $sql = "UPDATE user SET login_attempts = 0, locked_until = NULL WHERE user_id = ?";
-        $stmt = $_db->prepare($sql);
-        $stmt->execute([$user->user_id]);
-
-        $_SESSION['user'] = $user;
-
-        if ($remember) {
-            $token = sha1(uniqid() . $user->user_id . rand() . microtime());
-            $sql = "UPDATE user SET remember_token = ? WHERE user_id = ?";
-            $stmt = $_db->prepare($sql);
-            $stmt->execute([$token, $user->user_id]);
-            setcookie('remember_token', $token, time() + 86400 * 7, '/');
+    elseif ($user) {
+        $is_locked = false;
+        if ($user->locked_until && strtotime($user->locked_until) > time()) {
+            $is_locked = true;
+            $remaining = strtotime($user->locked_until) - time();
+            $error = "Too many failed attempts. Please try again in " . $remaining . " seconds.";
         }
 
-        redirect('/');
-    }
-    elseif ($user) {
-        $attempts = ($user->login_attempts ?? 0) + 1;
+        if (!$is_locked) {
+            if ($user->password === $password) {
+                $sql = "UPDATE user SET login_attempts = 0, locked_until = NULL WHERE email = ?";
+                $stmt = $_db->prepare($sql);
+                $stmt->execute([$email]);
 
-        if ($attempts >= 3) {
-            $locked_until = date('Y-m-d H:i:s', strtotime('+30 seconds'));
-            $sql = "UPDATE user SET login_attempts = ?, locked_until = ? WHERE user_id = ?";
-            $stmt = $_db->prepare($sql);
-            $stmt->execute([$attempts, $locked_until, $user->user_id]);
-            $error = "Too many failed attempts. Account locked for 30 seconds.";
-        } else {
-            $sql = "UPDATE user SET login_attempts = ? WHERE user_id = ?";
-            $stmt = $_db->prepare($sql);
-            $stmt->execute([$attempts, $user->user_id]);
-            $remaining = 3 - $attempts;
-            $error = "Invalid email or password. You have " . $remaining . " attempt(s) remaining.";
+                $user->login_attempts = 0;
+                $user->locked_until = null;
+                $_SESSION['user'] = $user;
+
+                if ($remember) {
+                    $token = sha1(uniqid() . ($user->user_id ?? '') . rand() . microtime());
+                    $sql = "UPDATE user SET remember_token = ? WHERE email = ?";
+                    $stmt = $_db->prepare($sql);
+                    $stmt->execute([$token, $email]);
+                    setcookie('remember_token', $token, time() + 86400 * 7, '/');
+                }
+
+                redirect('/');
+                exit;
+            } 
+            else {
+                if ($user->locked_until && strtotime($user->locked_until) <= time()) {
+                    $attempts = 1;
+                } else {
+                    $attempts = ($user->login_attempts ?? 0) + 1;
+                }
+
+                if ($attempts >= 3) {
+                    $locked_until = date('Y-m-d H:i:s', strtotime('+30 seconds'));
+                    $sql = "UPDATE user SET login_attempts = ?, locked_until = ? WHERE email = ?";
+                    $stmt = $_db->prepare($sql);
+                    $stmt->execute([$attempts, $locked_until, $email]);
+                    $error = "Too many failed attempts. Account locked for 30 seconds.";
+                } else {
+                    $sql = "UPDATE user SET login_attempts = ?, locked_until = NULL WHERE email = ?";
+                    $stmt = $_db->prepare($sql);
+                    $stmt->execute([$attempts, $email]);
+                    
+                    $remaining = 3 - $attempts;
+                    $error = "Invalid email or password. You have " . $remaining . " attempt(s) remaining.";
+                }
+            }
         }
     }
     else {

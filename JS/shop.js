@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const minusBtn = document.getElementById('minusBtn');
     const plusBtn = document.getElementById('plusBtn');
     const quantityInput = document.getElementById('quantity');
-
+    
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const id = this.getAttribute('data-product-id');

@@ -133,10 +133,9 @@ main{
 }
 /* user VoUCHER HISTORY */
 .btn-history {
-    position: absolute; /* 👉 核心位置代码：绝对定位 */
-    right: 0;           /* 👉 核心位置代码：贴紧右侧 */
+    position: absolute;
+    right: 0;           
 
-    /* 👇 下面全部是你原本的代码，原封不动 */
     display: inline-flex;
     align-items: center;
     justify-content: center;

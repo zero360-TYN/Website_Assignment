@@ -10,53 +10,57 @@ $("#okError").on("click", function () {
     errorRow.hide();
 });
 
-// ==========================================
-// 2. 核心提交逻辑 (Add & Update Product)
-// ==========================================
 function addData() {
-    let product_name = $("#pdtnme").val().trim();
-    let product_price = $("#pdtpc").val();
-    let product_category = $("#pdtcy").val().trim();
-    let product_stock = $("#pdtsk").val();
-    let product_description = $("#pdtdc").val().trim();
-    let product_discount = $("#pdtdt").val();
-    let product_release_date = $("#pdtrd").val();
-
+    let product_name = $("#pdtnme").val()?.trim() || "";
+    let product_price = $("#pdtpc").val()?.trim() || "";
+    let product_category = $("#pdtcy").val()?.trim() || "";
+    let product_stock = $("#pdtsk").val()?.trim() || "";
+    let product_description = $("#pdtdc").val()?.trim() || "";
+    let product_release_date = $("#pdtrd").val()?.trim() || "";
     let editId = $("#pdtadd").data("edit-id");
-    let numError = [
-        { name: "Price", value: parseFloat(product_price) },
-        { name: "Stock", value: parseInt(product_stock) }
-    ];
 
-    // --- 基础验证 ---
-    if (!product_name || !product_price || !product_category || !product_stock || !product_release_date) {
-        return showError("Please fill all fields!");
+    if (product_name === "" || product_price === "" || product_category === "" || product_stock === "" || product_release_date === "") {
+        return showError("Please fill all required fields!");
     }
     if (product_description.length > 200) return showError("Description is over maximum length!");
     if (product_category.length > 50) return showError("Category is over maximum length!");
 
-    // --- 数值验证 ---
-    for (let item of numError) {
-        if (item.value === 0) return showError(`${item.name} cannot be zero!`);
-        if (isNaN(item.value)) return showError(`${item.name} must be a number!`);
-        if (item.value < 0) return showError(`${item.name} cannot be negative!`);
+    let price = parseFloat(product_price);
+    let stock = parseInt(product_stock, 10);
+
+    if (isNaN(price) || price < 0) return showError("Price must be a valid positive number!");
+    if (price === 0) return showError("Price cannot be zero!"); 
+    if (isNaN(stock) || stock < 0) return showError("Stock must be a valid positive number!");
+    
+    let dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(product_release_date)) {
+        return showError("Invalid date format! Expected YYYY-MM-DD.");
     }
 
-    // --- 查重验证 (前端扫表查重) ---
+    let parsedDate = new Date(product_release_date);
+    if (isNaN(parsedDate.getTime())) {
+        return showError("This is not a real calendar date!");
+    }
+
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (parsedDate < today) {
+        return showError("Release date cannot be in the past!");
+    }
+
     let isDuplicate = false;
     $("#pdtable tr:gt(0)").each(function() {
-        let existingname = $(this).find("td:eq(2)").text().trim();
+        let existingName = $(this).find("td:eq(2)").text().trim().toLowerCase();
         let existingId = $(this).find("td:eq(0)").text().replace("#", "").trim();
         
-        if (editId && existingId == editId) return true; // 跳过自己
-        if (product_name.toLowerCase() === existingname.toLowerCase()) {
+        if (editId && existingId == editId) return true;
+        if (product_name.toLowerCase() === existingName) {
             isDuplicate = true;
-            return false; // 终止循环
+            return false; 
         }
     });
     if (isDuplicate) return showError("This product name already exists!");
 
-    // --- 组装数据 ---
     let formData = new FormData();
     formData.append("action", editId ? "update_product" : "create_product"); 
     if (editId) formData.append("id", editId);
@@ -81,27 +85,41 @@ function addData() {
             if (response.includes("Success")) {
                 location.reload();
             } else {
-                alert("Server Message:\n" + response); 
+                showError("Server Error:\n" + response);
             }
         },
         error: function(xhr, status, error) {
-            alert("Network/Server Error!\nStatus: " + xhr.status + "\nDetails: " + error);
+            showError("Network/Server Error!\nStatus: " + xhr.status);
         }
     });
 }
+function resetProductForm() {
+    $("#pdtnme, #pdtpc, #pdtsk, #pdtcy, #pdtdc, #pdtrd").val("");
+    let fileInput = $("#uploadImg")[0];
+    fileInput.value = "";
+    try {
+        fileInput.files = new DataTransfer().files; 
+    } catch(e) {} 
+    
+    $("#current_image_name").val("");
 
-// ==========================================
-// 3. 产品弹窗控制与侧边栏 (UI)
-// ==========================================
-function addProduct_popup() {
-    $("#addPopup").css("display", "flex");
-    // 自动清空之前的残留数据
-    $("form.productLbl, form.productPrice")[0].reset();
-    $("form.productLbl, form.productPrice")[1].reset();
+    $('#uploadImgLabel').text("Click or Drag to upload product image");
+    $("#detailImage").empty();
     $("#pdtadd").text("Submit →").removeData("edit-id");
+
+    $('.productSideNav a').removeClass('active');
+    $('.productSideNav a:first').addClass('active');
+    $('.productLbl, .productPrice, .productDetails').hide();
+    $('.productLbl').show();
+}
+function addProduct_popup() {
+    resetProductForm();
+    $("#addPopup").css("display", "flex");
+    
 }
 
 $("#pdtaddCancel").on("click", function() {
+    resetProductForm();
     $("#addPopup").hide();
 });
 
@@ -118,32 +136,38 @@ $(document).ready(function(){
             $('.productLbl').show();
         } else if (text === "Price & Stock") {
              $('.productPrice').css('display', 'flex'); 
-        } else if(text === "Details") {
+        }
+        if(text === "Details") {
             $('.productDetails').css('display', 'flex');
 
-            // 预览图片
             let file = $("#uploadImg")[0].files[0];
-            if(file) {
+            let oldImage = $("#current_image_name").val();
+
+            if (file) {
                 let reader = new FileReader();
                 reader.onload = function(e) {
-                    $("#detailImage").html(`<img src="${e.target.result}" style="width:170px; height:230px; object-fit:cover; border-radius:5px;">`);
+                    $("#detailImage").html(`<img src="${e.target.result}" style="width:170px; height:230px; object-fit:cover; border-radius:8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">`);
                 }
                 reader.readAsDataURL(file);
+            } else if (oldImage && oldImage !== "undefined" && oldImage !== "") {
+                $("#detailImage").html(`<img src="/img/product_Img/${oldImage}" style="width:170px; height:230px; object-fit:cover; border-radius:8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">`);
+            } else {
+                $("#detailImage").html(`
+                    <div style="width:170px; height:230px; border-radius:8px; background-color:#f1f5f9; border: 2px dashed #cbd5e1; display:flex; justify-content:center; align-items:center; color:#94a3b8; font-size:14px;">
+                        No Image
+                    </div>
+                `);
             }
-    
-            // 填充预览文字
             $("#detailName").text($('#pdtnme').val());
             $("#detailPrice").text("RM " + (parseFloat($('#pdtpc').val()).toFixed(2) || "0.00"));
             $("#detailStock").text("Stock: " + $('#pdtsk').val());
             $("#detailCategory").text($('#pdtcy').val());
-            $("#detailDiscount").text($('#pdtdt').val());
             $("#detailDescription").text($('#pdtdc').val());
             $("#detailDate").text($("#pdtrd").val());
         } 
     });
 });
 
-// 图片拖拽交互
 $('.uploadArea').on('dragover', function(e) {
     e.preventDefault();
 }).on('drop', function(e) {
@@ -157,11 +181,11 @@ $('#uploadImg').on('change', function() {
     $('.uploadArea').text($(this)[0].files[0].name);
 });
 
-// ==========================================
-// 4. 编辑 Product (点击 Edit 预填数据)
-// ==========================================
 $(document).on("click", ".pdtet", function() {
+    resetProductForm();
     $("#pdtnme").val($(this).data("name"));
+    $('#uploadImgLabel').text($(this).data("photo") ? "Current Image: " + $(this).data("photo") : "Click or Drag to upload product image");
+    $("#current_image_name").val($(this).data("photo"));
     $("#pdtpc").val($(this).data("price"));
     $("#pdtsk").val($(this).data("stock"));
     $("#pdtcy").val($(this).data("category"));

@@ -26,6 +26,12 @@ if(is_post()){
 
     $id = req('product_id');
     $quantity =req('quantity');
+    $quantity = (int)$quantity;
+    if($quantity < 1){
+        temp('info', "invalid quantity.");
+        redirect();
+        exit();
+    }
     $cart = get_cart();
     if($id){
         $stm = $_db->prepare("SELECT * FROM product WHERE product_id = ?");
